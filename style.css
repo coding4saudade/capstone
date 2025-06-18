@@ -1,34 +1,60 @@
-body {
-  font-family: Arial;
-  background-color: #f4f4f4;
-  color: #333;
+/* Base Reset */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-header, footer {
-  background-color: #333;
-  color: rgb(197, 93, 161);
-  text-align: center;
-  padding: 1;
+/* Body */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  min-height: 100vh;
+  color: #333;
+  display: flex;
+  flex-direction: column;
 }
+
+/* Header */
+header {
+  background: #6a11cb;  /* purple gradient */
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Navigation */
 
 nav {
-  background-color: #555;
-  text-align: center;
-  padding: 1;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
 }
-
 nav a {
-  color: #fff;
-  margin: 0;
   text-decoration: none;
+  color: #2575fc;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background 0.3s;
 }
-
 nav a:hover {
-  text-decoration: underline;
+  background: #2575fc;
+  color: white;
 }
 
+/* Main Content */
 main {
-  padding: 10;
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  background: #f0f0f0;
 }
