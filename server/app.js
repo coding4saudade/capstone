@@ -2,6 +2,20 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
+import profiles from './controllers/profiles';
+
+// Load environment variables from .env file
+dotenv.config();
+
+mongoose.connect( process.env.MONGODB );
+const db = mongoose.connection;
+//life cycle events for DB connection.  log errors or console successful connection
+db.on("error", console.error.bind(console, "Connection Error:"));
+db.once(
+  "open",
+  console.log.bind(console, "Successfully opened connection to Mongo!")
+);
 
 // Load environment variables from .env file
 dotenv.config();
@@ -62,7 +76,7 @@ app.get("/weather/:city", (request, response) => {
 });
 
 
-
+app.use("/profiles", profiles);
 
 
 
