@@ -1,19 +1,23 @@
 import html from "html-literal"
 
-export default () => html`
+export default state => html`
 
-<h2>Add Your Interests</h2>
-<input type="text" id="interestInput" placeholder="Type an interest" />
-<button id="addInterestBtn">Add Interest</button>
+<h1> Heat Map of Events near you </h1>
 
-<ul id="interestsList"></ul>
+<div class="image-placeholder">
+    Image Placeholder
+  </div>
 
-<form id="profileForm">
-  <button type="submit">Submit Profile</button>
+
+<h1>Login to join the fun</h1>
+<form id="loginForm">
+  <label for="loginUsername">Username or Email:</label><br>
+  <input type="text" id="loginUsername" name="loginUsername" required><br><br>
+
+  <!-- <label for="loginPassword">Password:</label><br>
+  <input type="password" id="loginPassword" name="loginPassword" required><br><br> -->
+
+  <button type="submit">Login</button>
 </form>
-
-
-  <div id="app"></div>
-
 
 `;
