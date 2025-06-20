@@ -7,3 +7,5 @@ export { default as viewNotFound } from "./viewNotFound";
 export { default as profile } from "./profile";
 export { default as links } from "./links";
 export { default as map } from "./map";
+export { default as create } from "./create";
+export { default as event } from "./event";

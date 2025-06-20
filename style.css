@@ -1,96 +1,133 @@
+/* Make padding and borders included in element's total width/height */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Header styles */
 header {
-  background: #f8f8f8;
-  padding: 20px;
-  text-align: center;
-  font-size: 24px;
+  background: #f8f8f8;       /* Light gray background for header */
+  padding: 20px;             /* Space inside the header */
+  text-align: center;        /* Center text inside header */
+  font-size: 24px;           /* Larger font size */
+  width: 100%;               /* Make header span full width of its container */
+  box-sizing: border-box;    /* Include padding in the width calculation */
 }
 
+/* Navigation bar styles */
 nav {
-  background: #333;
-  padding: 10px;
-  display: flex;
-  align-items: center; /* vertically align icon and nav */
-  gap: 20px;
-}
-
-nav i {
-  color: white; /* menu icon color */
-  cursor: pointer;
-}
-
-nav ul {
-  display: flex;        /* make list horizontal */
-  list-style: none;     /* remove bullets */
-  margin: 0;
-  padding: 0;
-  gap: 15px;            /* space between nav items */
-}
-
-nav ul li {
-  color: white;
-}
-
-nav ul li a {
-  color: white;
-  text-decoration: none;
-}
-
-nav ul li a:hover {
-  text-decoration: underline;
-}
-
-
-
-  form {
-    max-width: 300px;
-    margin: 20px auto;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background: #f9f9f9;
-  }
-
-  input[type="text"],
-  input[type="email"],
-  input[type="password"] {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  button {
-    width: 100%;
-    padding: 10px;
-    background: #333;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #555;
-  }
-
-.image-placeholder {
-  width: 300px;
-  height: 200px;
-  background-color: #e0e0e0; /* Light gray background */
-  border: 2px dashed #ccc;   /* Dashed border */
-  border-radius: 8px;        /* Rounded corners */
-  display: flex;
-  align-items: center;
+  background: #333;          /* Dark background */
+  padding: 10px;             /* Space inside nav */
+  display: flex;             /* Use flexbox for horizontal layout */
+  align-items: center;       /* Vertically center nav items */
+  gap: 20px;                 /* Space between nav items */
+  margin: 0 auto;
+  max-width: 800px;
   justify-content: center;
-  color: #888;               /* Placeholder text color */
-  font-family: sans-serif;
-  font-size: 16px;
-  margin: 20px auto;
-
 }
 
+/* Menu icon styles inside nav */
+nav i {
+  color: white;              /* White icon color */
+  cursor: pointer;           /* Pointer cursor on hover */
+}
+
+/* Navigation list styles */
+nav ul {
+  display: flex;             /* Horizontal list layout */
+  list-style: none;          /* Remove default bullets */
+  margin: 0;                 /* Remove default margin */
+  padding: 0;                /* Remove default padding */
+  gap: 15px;                 /* Space between list items */
+}
+
+/* Navigation list item text color */
+nav ul li {
+  color: white;              /* White text */
+}
+
+/* Navigation links styles */
+nav ul li a {
+  color: white;              /* White text */
+  text-decoration: none;     /* Remove underline */
+}
+
+/* Navigation links hover effect */
+nav ul li a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Form container styles */
+form {
+  max-width: 300px;          /* Limit form width for readability */
+  margin: 20px auto;         /* Center form horizontally with vertical margin */
+  padding: 15px;             /* Space inside the form */
+  border: 1px solid #ccc;    /* Light gray border */
+  border-radius: 8px;        /* Rounded corners */
+  background: #f9f9f9;       /* Slightly off-white background */
+}
+
+/* Input fields styling */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;               /* Inputs fill full width of form */
+  padding: 8px;              /* Inner spacing */
+  margin-top: 5px;           /* Space above input */
+  margin-bottom: 15px;       /* Space below input */
+  border: 1px solid #ccc;    /* Light gray border */
+  border-radius: 4px;        /* Slightly rounded corners */
+}
+
+/* Buttons styling */
+button {
+  width: 100%;               /* Button fills full width */
+  padding: 10px;             /* Inner spacing */
+  background: #333;          /* Dark background */
+  color: #fff;               /* White text */
+  border: none;              /* Remove default border */
+  border-radius: 4px;        /* Rounded corners */
+  cursor: pointer;           /* Pointer cursor on hover */
+}
+
+/* Button hover effect */
+button:hover {
+  background: #555;          /* Lighter dark background on hover */
+}
+
+/* Image placeholder styling */
+.image-placeholder {
+  width: 300px;              /* Fixed width */
+  height: 200px;             /* Fixed height */
+  background-color: #e0e0e0; /* Light gray background */
+  border: 2px dashed #ccc;   /* Dashed border for placeholder look */
+  border-radius: 8px;        /* Rounded corners */
+  display: flex;             /* Flex for centering content */
+  align-items: center;       /* Vertical centering */
+  justify-content: center;   /* Horizontal centering */
+  color: #888;               /* Gray text color */
+  font-family: sans-serif;   /* Clean font */
+  font-size: 16px;           /* Text size */
+  margin: 20px auto;         /* Center placeholder with vertical margin */
+}
+
+/* Main heading centering */
 h1 {
-  text-align: center;
+  text-align: center;        /* Center heading text */
+}
+
+/* Container that centers content and stacks vertically */
+.centered-content {
+  text-align: center;        /* Center inline content like text */
+  width: 100%;               /* Full container width */
+  display: flex;             /* Use flexbox layout */
+  flex-direction: column;    /* Stack children vertically */
+  align-items: center;       /* Center children horizontally */
+  gap: 1rem;                 /* Space between children */
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Make all direct children inside .centered-content fill full width */
+.centered-content > * {
+  width: 100%;               /* Children (nav, main, footer) span full width */
 }

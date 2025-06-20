@@ -3,16 +3,19 @@ import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
 import axios from "axios";
-import { setupInterestLimit } from "./components/InterestsSelector.js"; // NEW import for interests logic
+import { setupInterestLimit } from "./components/interestSelector.js"; // NEW import for interests logic
 
 const router = new Navigo("/");
 
 function render(state = store.home) {
   document.querySelector("#root").innerHTML = `
+
       ${components.header(state)}
+      <div class="centered-content">
       ${components.nav(store.links)}
       ${components.main(state)}
       ${components.footer()}
+      </div>
     `;
      router.updatePageLinks();
 }

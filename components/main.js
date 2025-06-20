@@ -7,4 +7,4 @@ import * as views from "../views";
 //    ${views['pizza']()}
 //    ${views['order']()}
 // `; code below replaces above
-export default state => html`${views[state.view](state)} `;
+export default state => html`${views[state.view](state)}`;
