@@ -11,8 +11,8 @@ function render(state = store.home) {
   document.querySelector("#root").innerHTML = `
 
       ${components.header(state)}
-      <div class="centered-content">
       ${components.nav(store.links)}
+      <div class="centered-content">
       ${components.main(state)}
       ${components.footer()}
       </div>

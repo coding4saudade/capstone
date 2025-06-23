@@ -44,4 +44,8 @@ export default state => html`
     <br />
     <button type="submit">Update Interests</button>
   </form>
+
+  <h3>
+    The weather in ${state.weather.city} is ${state.weather.description}. Temperature is ${state.weather.temp}F, and it feels like ${state.weather.feelsLike}F.
+ </h3>
 `;
