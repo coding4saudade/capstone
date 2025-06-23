@@ -5,12 +5,15 @@
 
 /* Header styles */
 header {
-  background: #f8f8f8;       /* Light gray background for header */
+  background: linear-gradient(to right, #007BFF, #8E2DE2); /* Blue to Purple */
+
+
   padding: 20px;             /* Space inside the header */
   text-align: center;        /* Center text inside header */
   font-size: 24px;           /* Larger font size */
   width: 100%;               /* Make header span full width of its container */
   box-sizing: border-box;    /* Include padding in the width calculation */
+  color: white; /* Make header text white for contrast */
 }
 
 /* Navigation bar styles */
@@ -21,7 +24,7 @@ nav {
   align-items: center;       /* Vertically center nav items */
   gap: 20px;                 /* Space between nav items */
   margin: 0 auto;
-  max-width: 800px;
+  max-width: none;
   justify-content: center;
 }
 
@@ -123,11 +126,27 @@ h1 {
   flex-direction: column;    /* Stack children vertically */
   align-items: center;       /* Center children horizontally */
   gap: 1rem;                 /* Space between children */
-  padding-left: 1rem;
-  padding-right: 1rem;
+
 }
 
 /* Make all direct children inside .centered-content fill full width */
 .centered-content > * {
   width: 100%;               /* Children (nav, main, footer) span full width */
+}
+
+/* Sign up link */
+
+.signup-link {
+  text-align: center;       /* centers the text under the form */
+  margin-top: 10px;        /* space above the link */
+  font-size: 1rem;         /* adjust as needed */
+}
+
+.signup-link a {
+  color: #007BFF;          /* nice blue link */
+  text-decoration: none;   /* no underline by default */
+}
+
+.signup-link a:hover {
+  text-decoration: underline;  /* underline on hover */
 }
