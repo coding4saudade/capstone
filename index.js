@@ -31,7 +31,7 @@ router.hooks({
     // Add a switch case statement to handle multiple routes
     switch (view) {
       // New Case for the Home View
-    case "profile":
+    case "user":
       axios
         // Get request to retrieve the current weather data using the API key and providing a city name
         .get(

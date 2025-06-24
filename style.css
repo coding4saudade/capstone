@@ -26,6 +26,7 @@ nav {
   margin: 0 auto;
   max-width: none;
   justify-content: center;
+  display: none;              /* hides hamburger icon
 }
 
 /* Menu icon styles inside nav */
@@ -149,4 +150,10 @@ h1 {
 
 .signup-link a:hover {
   text-decoration: underline;  /* underline on hover */
+}
+
+@media screen and (max-width: 768px) { /* only shows hamgurger on 768px screens or smaller /
+  nav i {
+    display: block;
+  }
 }

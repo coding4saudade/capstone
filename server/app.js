@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import profiles from './controllers/profiles.js';
+import users from './controllers/users.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -21,7 +21,7 @@ db.once(
 dotenv.config();
 
 // get the PORT from the environment variables, OR use 3000 as default
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // Initialize the Express application
 const app = express();
@@ -37,7 +37,7 @@ app.use(logging);
 
 // Handle the request with HTTP GET method from http://localhost:3000/
 app.get("/", (request, response) => {
-   response.sent("Welcome to the Class SPA REST API");
+   response.send("Welcome to the Connection App");
 });
 
 // Handle the request with HTTP GET method from http://localhost:3000/status
@@ -76,13 +76,13 @@ app.get("/weather/:city", (request, response) => {
 });
 
 
-app.use("/profiles", profiles);
+app.use("/users", users);
 
 
 
 
 // Tell the Express app to start listening
-// Let the humans know I am running and listening on 3000
+// Let the humans know I am running and listening on 4000
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 
