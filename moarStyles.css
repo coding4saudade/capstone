@@ -1,3 +1,4 @@
+/* Make padding and borders included in element's total width/height */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -56,6 +57,7 @@ nav ul li a {
 nav ul li a:hover {
   text-decoration: underline; /* Underline on hover */
 }
+
 /* Form container styles */
 form {
   max-width: 300px;          /* Limit form width for readability */
@@ -65,18 +67,6 @@ form {
   border-radius: 8px;        /* Rounded corners */
   background: #f9f9f9;       /* Slightly off-white background */
 }
-
-/* form {
-  border: solid 1px black;
-  display: flex;
-  flex-direction: column;
-  margin: 1rem 1rem;
-} */
-
-/* form > * {
-  margin: 0.5rem;
-} */
-
 
 /* Input fields styling */
 input[type="text"],
@@ -122,7 +112,6 @@ button:hover {
   margin: 20px auto;         /* Center placeholder with vertical margin */
 }
 
-
 /* Main heading centering */
 h1 {
   text-align: center;        /* Center heading text */
@@ -136,6 +125,11 @@ h1 {
   flex-direction: column;    /* Stack children vertically */
   align-items: center;       /* Center children horizontally */
   gap: 1rem;                 /* Space between children */
+}
+
+/* Make all direct children inside .centered-content fill full width */
+.centered-content > * {
+  width: 100%;               /* Children (nav, main, footer) span full width */
 }
 
 /* Sign up link */
@@ -154,138 +148,38 @@ h1 {
   text-decoration: underline;  /* Underline on hover */
 }
 
-form > input[type="submit"] {
-  width: 40%;
-  margin: 0.5rem;
-  margin-right: auto;
-}
+/* Media query to show hamburger icon only on small screens */
 
-footer {
-  border-top: solid 1px black;
-  padding: 2rem 2rem 4rem;
-  margin: 1rem 1rem;
-}
-
-#bio {
-  margin: 1rem;
-}
-
-
-
-#oops404 img {
-  max-width: 40%;
-  margin-left: 30%;
-}
-
-#oops404 .attribution {
-  font-size: 0.7em;
-  text-align: center;
-}
-
-@media (max-width: 549px){
-  .hidden--mobile {
-    display: none !important;
+@media (max-width: 480px) {
+  nav i {
+    display: block;
   }
 
-  nav {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  nav > i {
-    padding: 1rem;
-    font-size: 2em;
-  }
-
-  nav > ul {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 0 0;
-  }
-
-  nav > ul > li {
-    padding: 0.5rem;
-    list-style-type: none;
-  }
-
-  #bio img {
-    float: left;
-    width: 40%;
-    height: auto;
-    margin-right: 1rem;
-  }
-}
-
-
-
-
-@media (min-width: 550px) {
-  nav > ul {
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0;
-  }
-
-  /* Add this block to style each nav item and insert the dots */
-  nav > ul > li {
-    position: relative;
-    padding: 0 10px;
-    color: white;
-  }
-
-  nav > ul > li::after {
-    content: "•";
-    position: absolute;
-    right: 0;
-    transform: translateX(100%);
-    color: white;
-    font-size: 1.2em;
-    line-height: 1;
-  }
-
-  nav > ul > li:last-child::after {
-    content: "";
-  }
-
-  nav > .fa-bars {
+ .hidden--mobile {
     display: none;
+
+ }
+
+  nav ul {
+    display: none; /* Hide menu links by default on small screens */
+    flex-direction: column; /* Stack vertically when shown */
+    background-color: #333; /* Optional: background to match nav */
+    position: absolute; /* Layer over content */
+    top: 60px; /* Adjust depending on nav height */
+    left: 0;
+    width: 100%;
+    padding: 10px 0;
   }
 
-  #bio {
-    margin-right: 3rem;
-  }
-
-  #bio img {
-    float: left;
-    width: 25%;
-    height: auto;
-    margin-right: 1rem;
+  nav ul.show {
+    display: flex; /* Show menu links when toggled */
   }
 }
 
+@media (min-width: 481px) {
 
-.popup {
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #28a745;
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  z-index: 1000;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-.hidden {
+nav > .fa-bars {
   display: none;
 }
 
-#currentInterests {
-  list-style-type: none;  /* Removes bullets */
-  padding-left: 0;        /* Removes default left padding */
-  margin-left: 0;         /* Optional: remove margin too */
 }

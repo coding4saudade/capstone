@@ -1,22 +1,21 @@
 import html from "html-literal";
 
 export default state => html`
-  <h2>Create an Event</h2>
-  <form id="eventForm">
-    <label for="eventName">Event Name:</label><br />
-    <input type="text" id="eventName" name="eventName" required /><br /><br />
+  <h2>Create Account</h2>
+  <form id="registerForm">
+    <label for="username">Username:</label><br />
+    <input type="text" id="username" name="username" required /><br /><br />
 
-    <label for="eventAddress">Address:</label><br />
-    <input type="text" id="eventAddress" name="eventAddress" required /><br /><br />
+    <label for="email">Email:</label><br />
+    <input type="email" id="email" name="email" required /><br /><br />
 
-    <label for="eventDate">Date:</label><br />
-    <input type="date" id="eventDate" name="eventDate" required /><br /><br />
+    <label for="startingAddress">Starting Address:</label><br />
+    <input type="startingAddress" id="startingAddress" name="startingAddress" required /><br /><br />
 
-    <label for="eventTime">Time:</label><br />
-    <input type="time" id="eventTime" name="eventTime" required /><br /><br />
+
 
     <fieldset>
-      <legend>Select Corresponding Interests (at least one required):</legend>
+      <legend>Select up to 10 Interests:</legend>
       <label><input type="checkbox" name="interests" value="sports" /> Sports</label><br />
       <label><input type="checkbox" name="interests" value="music" /> Music</label><br />
       <label><input type="checkbox" name="interests" value="dancing" /> Dancing</label><br />
@@ -29,6 +28,6 @@ export default state => html`
       <label><input type="checkbox" name="interests" value="craftsmanship" /> Craftsmanship</label><br />
     </fieldset><br />
 
-    <button type="submit">Create Event</button>
+    <button type="submit">Register</button>
   </form>
 `;

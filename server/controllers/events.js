@@ -1,16 +1,15 @@
 
 import { Router } from  "express";
-import User from "../models/User.js";
+import Event from "../models/Event.js";
 
 const router = Router();
 
-// Create User route
+// Create Event route
 router.post("/", async (request, response) => {
-  console.log("route invoked");
   try {
-    const newUser = new User(request.body);
+    const newEvent = new Event(request.body);
 
-    const data = await newUser.save();
+    const data = await newEvent.save();
 
     response.json(data);
   } catch(error) {
@@ -23,14 +22,14 @@ router.post("/", async (request, response) => {
   }
 });
 
-// Get all user route  http://localhost:3000/users
+// Get all Event route  http://localhost:3000/events
 
 router.get("/", async (request, response) => {
   try {
     // Store the query params into a JavaScript Object
     const query = request.query; // Defaults to an empty object {}
 
-    const data = await User.find(query);
+    const data = await Event.find(query);
 
     response.json(data);
   } catch(error) {
@@ -44,7 +43,7 @@ router.get("/", async (request, response) => {
 // Get a single user by ID http://localhost:3000/users/{id hash}
 router.get("/:id", async (request, response) => {
   try {
-    const data = await User.findById(request.params.id);
+    const data = await Event.findById(request.params.id);
 
     response.json(data);
   } catch(error) {
@@ -55,10 +54,10 @@ router.get("/:id", async (request, response) => {
   }
 });
 
-// Delete a User by ID
+// Delete a Event by ID
 router.delete("/:id", async (request, response) => {
   try {
-    const data = await User.findByIdAndDelete(request.params.id);
+    const data = await Event.findByIdAndDelete(request.params.id);
 
     response.json(data);
   } catch(error) {
@@ -69,19 +68,20 @@ router.delete("/:id", async (request, response) => {
   }
 });
 
-// Update a user by ID
+// Update a single Event by ID
 router.put("/:id", async (request, response) => {
   try {
     const body = request.body;
 
-    const data = await User.findByIdAndUpdate(
+    const data = await Event.findByIdAndUpdate(
       request.params.id,
       {
         $set: {
-          username: body.username,
-          email: body.email,
-          startingAddress: body.startingAddress,
-          interests: body.interests
+          eventName: body.eventName,
+          address: body.address,
+          startTime: body.startTime,
+          endTime: body.endTime,
+          interestsFlag: body.interests
         }
       },
       {
@@ -101,9 +101,5 @@ router.put("/:id", async (request, response) => {
     return response.status(500).json(error.errors);
   }
 });
-
-router.put("/login", async (request, response) => {})
-
-
 
 export default router;

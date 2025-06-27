@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema({
-  title: {
+  eventName: {
     type: String,
     required: true,
     trim: true
   },
   description: String,
-  date: {
+  eventDate: {
     type: Date,
     required: true
   },

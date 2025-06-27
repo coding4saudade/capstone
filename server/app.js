@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import users from './controllers/users.js';
+import events from './controllers/events.js'
 
 // Load environment variables from .env file
 dotenv.config();
@@ -77,6 +78,7 @@ app.get("/weather/:city", (request, response) => {
 
 
 app.use("/users", users);
+app.use("/events", events);
 
 
 

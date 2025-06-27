@@ -21,7 +21,7 @@ export default state => html`
 </form>
 
 <p class="signup-link">
-  Don't have an account? <a href="/create" data-navigo>Sign Up Here</a>
+  Don't have an account? <a href="/createUser" data-navigo>Sign Up Here</a>
 </p>
 
 
