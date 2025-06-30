@@ -10,7 +10,7 @@ export default state => html`
 
 
 <h1>Login to join the fun</h1>
-<form id="loginForm">
+<form id="loginForm" >
   <label for="loginUsername">Username or Email:</label><br>
   <input type="text" id="loginUsername" name="loginUsername" required><br><br>
 
@@ -21,7 +21,7 @@ export default state => html`
 </form>
 
 <p class="signup-link">
-  Don't have an account? <a href="/create" data-navigo>Sign Up Here</a>
+  Don't have an account? <a href="/createUser" data-navigo>Sign Up Here</a>
 </p>
 
 
