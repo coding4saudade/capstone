@@ -1,5 +1,5 @@
  export default {
-   header: "List of users",
-   view: "users",
+   header: "Followed Users",
+   view: "followedUsers",
    users: []
  };

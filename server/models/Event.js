@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema({
+
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+
+
   eventName: {
     type: String,
     required: true,
@@ -11,21 +19,27 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  type: {
+  address: {
+    type: String,
+    required: true
+  },
+  visable: {
     type: String,
     enum: ["public", "private"],
     default: "public"
   },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+  startTime: {
+    type: String,
+
   },
-  attendees: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  }]
+  endTime: {
+    type: String,
+
+  },
+  interests: [String]
+
 });
 
 const Event = mongoose.model("Event", eventSchema);
 export default Event;
+

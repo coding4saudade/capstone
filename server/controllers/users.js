@@ -22,6 +22,21 @@ router.post("/", async (request, response) => {
     return response.status(500).json(error.errors);
   }
 });
+// GET a user by username
+router.get("/username/:username", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user by username:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // Get all user route  http://localhost:3000/users
 
@@ -71,26 +86,18 @@ router.delete("/:id", async (request, response) => {
 
 // Update a user by ID
 router.put("/:id", async (request, response) => {
+  console.log("Update route hit. Body:", request.body);
   try {
-    const body = request.body;
+    const updates = request.body;
 
     const data = await User.findByIdAndUpdate(
       request.params.id,
+      { $set: updates },
       {
-        $set: {
-          username: body.username,
-          email: body.email,
-          startingAddress: body.startingAddress,
-          interests: body.interests
-        }
-      },
-      {
-        //tells mongoDB to return the new info
         new: true,
         runValidators: true
       }
     );
-
     response.json(data);
   } catch(error) {
     // Output error to the console incase it fails to send in response
@@ -102,7 +109,7 @@ router.put("/:id", async (request, response) => {
   }
 });
 
-router.put("/login", async (request, response) => {})
+// router.put("/login", async (request, response) => {})
 
 
 

@@ -10,7 +10,7 @@ export default state => html`
 
 
 <h1>Login to join the fun</h1>
-<form id="loginForm">
+<form id="loginForm" >
   <label for="loginUsername">Username or Email:</label><br>
   <input type="text" id="loginUsername" name="loginUsername" required><br><br>
 

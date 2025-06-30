@@ -5,5 +5,7 @@ export default [
   { url: "/userHome", text: "User Home" },
   { url: "/createEvent", text: "Create an Event" },
   { url: "/createUser", text: "Create an Account" },
-  { url: "/Users", text: "List of users" }
+  { url: "/editEvents", text: "Edit an Event" },
+  { url: "/editUser", text: "Edit your Account" },
+  { url: "/followedUsers", text: "Followed Users" }
 ];

@@ -6,3 +6,5 @@ export { default as userHome } from "./userHome";
 export { default as map } from "./users";
 export { default as createUser } from "./createUser";
 export { default as createEvent } from "./createEvent";
+export { default as editUser } from "./editUser";
+export { default as editEvents } from "./editEvents";

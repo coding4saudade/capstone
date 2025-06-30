@@ -3,6 +3,10 @@ import html from "html-literal";
 export default state => html`
   <h2>Create an Event</h2>
   <form id="eventForm">
+
+    <!-- <label for="createdBy">Created by:</label><br />
+    <input type="text" id="userName" name="createdBy" readonly /><br /><br /> -->
+
     <label for="eventName">Event Name:</label><br />
     <input type="text" id="eventName" name="eventName" required /><br /><br />
 
@@ -11,7 +15,7 @@ export default state => html`
 
 
     <label for="visable">Closed Event?</label>
-    <select id="visable" name="Event visability">
+    <select id="visable" name="visable">
         <option value="" hidden>Private or Public event</option>
         <option value="private">private</option>
         <option value="public">public</option>
@@ -25,10 +29,10 @@ export default state => html`
     <input type="date" id="eventDate" name="eventDate" required /><br /><br />
 
     <label for="startTime">Start time:</label><br />
-    <input type="time" id="eventTime" name="startTime" required /><br /><br />
+    <input type="time" id="startTime" name="startTime" required /><br /><br />
 
      <label for="endTime">End time:</label><br />
-    <input type="time" id="eventTime" name="endTime" required /><br /><br />
+    <input type="time" id="endTime" name="endTime" required /><br /><br />
 
     <fieldset>
       <legend>Select Corresponding Interests (at least one required):</legend>
