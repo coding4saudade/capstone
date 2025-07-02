@@ -59,7 +59,7 @@ const hostedEvents = state.events?.filter(event =>
 
     <div class="eventActions">
       <button class="createEventButton">Create Event</button>
-      <button class="editEventsButton">Edit or Delete Events</button>
+      <button class="editEventsButton" id="editEventsButton">Edit or Delete Events</button>
     </div>
 
     <h3>Your Interests</h3>

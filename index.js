@@ -151,141 +151,154 @@ router.hooks({
         done();
     }
   },
-  already: (match) => {
-    const view = match?.data?.view ? camelCase(match.data.view) : "home";
-    console.log("Already hook view:", view);
-    render(store[view]);
-  },
-  after: (match) => {
-    const view = match?.data?.view ? camelCase(match.data.view) : "home";
+after: (match) => {
+  const view = match?.data?.view ? camelCase(match.data.view) : "home";
+  console.log("After hook running for view:", view);
 
-    const barsIcon = document.querySelector(".fa-bars");
-    if (barsIcon) {
-      barsIcon.addEventListener("click", () => {
-        const navUl = document.querySelector("nav > ul");
-        if (navUl) navUl.classList.toggle("hidden--mobile");
-      });
-    }
-
-    if (view === "home") {
-      const form = document.querySelector("#loginForm");
-      if (form) {
-        form.addEventListener("submit", event => {
-          event.preventDefault();
-          const username = event.target.loginUsername.value.toLowerCase();
-          axios
-            .get(`http://localhost:4000/users/username/${username}`)
-            .then(res => {
-              store.session.user = res.data;
-              store.session.isLoggedIn = true;
-              localStorage.setItem("sessionUser", JSON.stringify(res.data));
-              localStorage.setItem("isLoggedIn", "true");
-              router.navigate(`/userHome/${res.data._id}`);
-            })
-            .catch(err => {
-              console.error("Login failed:", err);
-              alert("Username not found.");
-            });
-        });
-      }
-    }
-
-    if (view === "createUser") {
-      const registerForm = document.querySelector("#registerForm");
-      if (registerForm) {
-        registerForm.addEventListener("submit", event => {
-          event.preventDefault();
-          const formData = new FormData(registerForm);
-          const newUser = {
-            username: formData.get("username").toLowerCase(),
-            email: formData.get("email").toLowerCase(),
-            startingAddress: formData.get("startingAddress"),
-            interests: formData.getAll("interests")
-          };
-          axios
-            .post("http://localhost:4000/users", newUser)
-            .then(res => {
-              store.session.user = res.data;
-              store.session.isLoggedIn = true;
-              localStorage.setItem("sessionUser", JSON.stringify(res.data));
-              localStorage.setItem("isLoggedIn", "true");
-              router.navigate(`/userHome/${res.data._id}`);
-            })
-            .catch(err => {
-              console.error("Failed to create user:", err);
-              alert("Could not create user. Try a different username or check your input.");
-            });
-        });
-      }
-    }
-
-    if (view === "updateEvent") {
-      const updateForm = document.querySelector("#updateEventForm");
-      if (updateForm) {
-        updateForm.addEventListener("submit", event => {
-          event.preventDefault();
-          const formData = new FormData(updateForm);
-          const eventData = {
-            createdBy: store.updateEvent.createdBy._id,
-            eventName: formData.get("eventName"),
-            address: formData.get("address"),
-            visable: formData.get("visable"),
-            eventDate: formData.get("eventDate"),
-            startTime: formData.get("startTime"),
-            endTime: formData.get("endTime"),
-            interests: formData.getAll("interests")
-          };
-          axios
-            .put(`http://localhost:4000/events/${store.updateEvent._id}`, eventData)
-            .then(response => {
-              router.navigate(`/userHome/${store.session.user._id}`);
-            })
-            .catch(error => {
-              console.error("Failed to update event:", error);
-              alert("Failed to update event. Please try again.");
-            });
-        });
-      }
-    }
-
-    if (view === "editEvents") {
-      const createEventButton = document.querySelector(".createEventButton");
-      if (createEventButton) {
-        createEventButton.addEventListener("click", () => {
-          router.navigate("/createEvent");
-        });
-      }
-
-      const updateButtons = document.querySelectorAll(".updateEventButton");
-      updateButtons.forEach(button => {
-        const eventId = button.dataset.id;
-        button.addEventListener("click", () => {
-          router.navigate(`/editEvent/${eventId}`);
-        });
-      });
-
-      const deleteButtons = document.querySelectorAll(".deleteEventButton");
-      deleteButtons.forEach(button => {
-        button.addEventListener("click", () => {
-          const eventId = button.dataset.id;
-          const eventName = button.dataset.name;
-          const eventDate = button.dataset.date;
-          showDeleteConfirmation({ eventId, eventName, eventDate });
-        });
-      });
-    }
-   if (store.userHome.view === "userHome") {
-  console.log("MOOOOOOO!!!!Attaching event listeners for userHome");
-
-  const editEventButton = document.querySelector(".editEventsButton");
-  console.log("Found button:", editEventButton);
-
-  if (editEventButton) {
-    editEventButton.addEventListener("click", () => {
-      router.navigate("/editEvents");
+  const barsIcon = document.querySelector(".fa-bars");
+  if (barsIcon) {
+    barsIcon.addEventListener("click", () => {
+      const navUl = document.querySelector("nav > ul");
+      if (navUl) navUl.classList.toggle("hidden--mobile");
     });
   }
-}
+
+  // if (view in store) {
+  //   console.log(">>> Attaching event listeners for userHome");
+
+  //   const editEventButton = document.querySelector(".editEventsButton");
+
+  //   if (editEventButton) {
+  //     console.log(" Found .editEventsButton, adding click listener");
+  //     editEventButton.addEventListener("click", () => {
+  //       console.log(" Edit Events button clicked, navigating...");
+  //       router.navigate("/editEvents");
+  //     });
+  //   } else {
+  //     console.warn(" No .editEventsButton found in DOM.");
+  //   }
+  // }
+
+
+  if (view === "home") {
+    const form = document.querySelector("#loginForm");
+    if (form) {
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        const username = event.target.loginUsername.value.toLowerCase();
+        axios
+          .get(`http://localhost:4000/users/username/${username}`)
+          .then(res => {
+            store.session.user = res.data;
+            store.session.isLoggedIn = true;
+            localStorage.setItem("sessionUser", JSON.stringify(res.data));
+            localStorage.setItem("isLoggedIn", "true");
+            router.navigate(`/userHome/${res.data._id}`);
+          })
+          .catch(err => {
+            console.error("Login failed:", err);
+            alert("Username not found.");
+          });
+      });
+    }
+  }
+
+  if (view === "createUser") {
+    const registerForm = document.querySelector("#registerForm");
+    if (registerForm) {
+      registerForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const formData = new FormData(registerForm);
+        const newUser = {
+          username: formData.get("username").toLowerCase(),
+          email: formData.get("email").toLowerCase(),
+          startingAddress: formData.get("startingAddress"),
+          interests: formData.getAll("interests")
+        };
+        axios
+          .post("http://localhost:4000/users", newUser)
+          .then(res => {
+            store.session.user = res.data;
+            store.session.isLoggedIn = true;
+            localStorage.setItem("sessionUser", JSON.stringify(res.data));
+            localStorage.setItem("isLoggedIn", "true");
+            router.navigate(`/userHome/${res.data._id}`);
+          })
+          .catch(err => {
+            console.error("Failed to create user:", err);
+            alert("Could not create user. Try a different username or check your input.");
+          });
+      });
+    }
+  }
+
+  if (view === "updateEvent") {
+    const updateForm = document.querySelector("#updateEventForm");
+    if (updateForm) {
+      updateForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const formData = new FormData(updateForm);
+        const eventData = {
+          createdBy: store.updateEvent.createdBy._id,
+          eventName: formData.get("eventName"),
+          address: formData.get("address"),
+          visable: formData.get("visable"),
+          eventDate: formData.get("eventDate"),
+          startTime: formData.get("startTime"),
+          endTime: formData.get("endTime"),
+          interests: formData.getAll("interests")
+        };
+        axios
+          .put(`http://localhost:4000/events/${store.updateEvent._id}`, eventData)
+          .then(response => {
+            router.navigate(`/userHome/${store.session.user._id}`);
+          })
+          .catch(error => {
+            console.error("Failed to update event:", error);
+            alert("Failed to update event. Please try again.");
+          });
+      });
+    }
+  }
+
+  if (view === "editEvents") {
+    const createEventButton = document.querySelector(".createEventButton");
+    if (createEventButton) {
+      createEventButton.addEventListener("click", () => {
+        router.navigate("/createEvent");
+      });
+    }
+
+    const updateButtons = document.querySelectorAll(".updateEventButton");
+    updateButtons.forEach(button => {
+      const eventId = button.dataset.id;
+      button.addEventListener("click", () => {
+        router.navigate(`/editEvent/${eventId}`);
+      });
+    });
+
+    const deleteButtons = document.querySelectorAll(".deleteEventButton");
+    deleteButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const eventId = button.dataset.id;
+        const eventName = button.dataset.name;
+        const eventDate = button.dataset.date;
+        showDeleteConfirmation({ eventId, eventName, eventDate });
+      });
+    });
+  }
+//    if (store.userHome.view === "userHome") {
+//   console.log("MOOOOOOO!!!!Attaching event listeners for userHome");
+
+//   const editEventButton = document.querySelector(".editEventsButton");
+//   console.log("Found button:", editEventButton);
+
+//   if (editEventButton) {
+//     editEventButton.addEventListener("click", () => {
+//       router.navigate("/editEvents");
+//     });
+//   }
+// }
 
 
   }
@@ -293,7 +306,7 @@ router.hooks({
 
 router.on({
   "/": () => render(),
-  "/userHome/:id": match => {
+ "/userHome/:id": match => {
   const userId = match.data.id;
   Promise.all([
     axios.get(`http://localhost:4000/users/${userId}`),
@@ -305,6 +318,19 @@ router.on({
       store.userHome.view = "userHome";
       store.session.user = userResponse.data;
       render(store.userHome);
+
+
+      const editEventButton = document.querySelector(".editEventsButton");
+      if (editEventButton) {
+        console.log(" Found .editEventsButton, adding click listener");
+        editEventButton.addEventListener("click", () => {
+          console.log(" Edit Events button clicked, navigating...");
+          router.navigate("/editEvents");
+        });
+      } else {
+        console.warn(" .editEventsButton not found in DOM.");
+      }
+
     })
     .catch(error => {
       console.error("Error loading userHome:", error);
