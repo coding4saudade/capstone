@@ -126,6 +126,26 @@ button {
   margin: 1rem auto;
 }
 
+.logoutButton {
+  display: inline-block;  /* prevent it from stretching */
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+  width: auto;           /* explicit auto width */
+}
+
+.logoutButton:hover {
+  background-color: #0056b3;
+}
+
+
+
 .eventActions button {
   flex: 1;
   padding: 10px;
@@ -331,6 +351,52 @@ footer {
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
   transition: opacity 0.3s ease;
 }
+/* Confirmation-style popup (delete) */
+#delete-popup {
+  top: 30%;
+  background-color: white;
+  color: #333;
+  padding: 1.5rem 2rem;
+  width: 300px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+/* Content container inside popup */
+#delete-popup .popup-content h3 {
+  margin-top: 0;
+}
+
+/* Action buttons inside delete popup */
+#delete-popup .popup-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+#delete-popup .popup-actions button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Confirm delete button */
+#delete-popup .popup-actions .danger {
+  background-color: #cc0000;
+  color: white;
+}
+
+/* Cancel delete button */
+#delete-popup .popup-actions #cancel-delete {
+  background-color: #ccc;
+  color: #333;
+}
+
 
 .hidden {
   display: none;

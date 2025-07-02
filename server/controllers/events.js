@@ -8,10 +8,15 @@ router.post("/", async (request, response) => {
   try {
     console.log("Create Event payload:", request.body);  // Debug log on POST payload
 
-    // Explicitly assign createdBy from request body (or fallback to a default or error)
+
+       if (!request.body.createdBy) {
+      return response.status(400).json({ message: "Missing required field: createdBy" });
+    }
+
+    //  assign createdBy from request body
     const eventData = {
       ...request.body,
-      createdBy: request.body.createdBy || "unknown", // or handle error if missing
+      createdBy: request.body.createdBy
     };
 
     const newEvent = new Event(eventData);
@@ -34,9 +39,10 @@ router.post("/", async (request, response) => {
 router.get("/", async (request, response) => {
   try {
     const query = request.query;
-    console.log("GET /events with query:", query);
+    //console.log("GET /events with query:", query);
 
-    const data = await Event.find(query);
+    const data = await Event.find(query).populate("createdBy", "username email");
+
 
     console.log(`Found ${data.length} events`);
     response.json(data);
@@ -47,13 +53,30 @@ router.get("/", async (request, response) => {
   }
 });
 
+// Get all events created by a specific user
+router.get("/user/:userId", async (request, response) => {
+  try {
+    const { userId } = request.params;
+    console.log("GET /events/user/:userId with id:", userId);
+
+    const data = await Event.find({ createdBy: userId }).populate("createdBy", "username email");
+
+    console.log(`Found ${data.length} events for user ${userId}`);
+    response.json(data);
+  } catch (error) {
+    console.log("Error in GET /events/user/:userId:", error);
+    return response.status(500).json(error.errors);
+  }
+});
+
 // Get a single Event by ID
 router.get("/:id", async (request, response) => {
   try {
     const eventId = request.params.id;
     console.log("GET /events/:id with id:", eventId);
 
-    const data = await Event.findById(eventId);
+    const data = await Event.findById(eventId).populate("createdBy", "username email");
+
 
     console.log("Event found:", data);
     response.json(data);
@@ -94,7 +117,7 @@ router.put("/:id", async (request, response) => {
         $set: {
           createdBy: body.createdBy,
           eventName: body.eventName,
-          eventAddress: body.address,
+          address: body.address,
           visable: body.visable,
           eventDate: body.eventDate,
           startTime: body.startTime,

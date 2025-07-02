@@ -4,8 +4,8 @@ export default state => html`
   <h2>Create an Event</h2>
   <form id="eventForm">
 
-    <!-- <label for="createdBy">Created by:</label><br />
-    <input type="text" id="userName" name="createdBy" readonly /><br /><br /> -->
+    <label for="createdBy">Created by:</label><br />
+    <input type="text" id="userName" name="createdBy" readonly /><br /><br />
 
     <label for="eventName">Event Name:</label><br />
     <input type="text" id="eventName" name="eventName" required /><br /><br />

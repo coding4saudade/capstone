@@ -1,4 +1,6 @@
+// store/updateEvent.js
 export default {
+  _id: "",
   eventName: "",
   address: "",
   eventDate: "",
@@ -7,7 +9,5 @@ export default {
   interests: [],
   visable: "public",
   createdBy: null,
-  view: "createEvent",
-   userId: "",
-  username: ""
+  view: "updateEvent",
 };

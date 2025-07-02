@@ -23,6 +23,18 @@
 </head>
 <body>
   <div id="popup-message" class="hidden popup">User created!</div>
+<!-- Confirmation delete popup -->
+  <div id="delete-popup" class="popup hidden">
+    <div class="popup-content">
+      <h3>Delete Event?</h3>
+      <p id="delete-event-name"></p>
+      <p id="delete-event-date"></p>
+      <div class="popup-actions">
+        <button class="danger" id="confirm-delete">Delete!</button>
+        <button id="cancel-delete">Cancel</button>
+      </div>
+    </div>
+  </div>
 
 
   <div id="root"></div>

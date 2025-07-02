@@ -10,9 +10,11 @@ export default state => {
     event.interests?.some(interest => state.interests?.includes(interest))
   );
 
-  const hostedEvents = state.events?.filter(event =>
-    event.createdBy === (state.username || state.user?.username)
-  );
+const currentUsername = state.username || state.user?.username;
+
+const hostedEvents = state.events?.filter(event =>
+  event.createdBy?.username === currentUsername
+);
 
   return html`
     <h2>Welcome back, ${state.username || state.user?.username || "User"}!</h2>
@@ -24,20 +26,21 @@ export default state => {
       </h3>
     ` : "<h3>Loading weather data...</h3>"}
 
-    <h3>Events Based on Your Interests</h3>
-    <ul id="interestEvents">
-      ${matchedEvents?.length
-        ? matchedEvents.map(event => `
-            <li>
-              <strong>${event.eventName}</strong><br />
-              <em>Hosted by: ${event.createdBy}</em><br />
-              <span>${event.eventDate} @ ${event.startTime}–${event.endTime}</span><br />
-              <span>${event.address}</span>
-            </li>
-          `).join("")
-        : "<li>No matching events</li>"
-      }
-    </ul>
+<h3>Events Based on Your Interests</h3>
+<ul id="interestEvents">
+  ${matchedEvents?.length
+    ? matchedEvents.map(event => `
+        <li>
+          <strong>${event.eventName}</strong><br />
+          <em>Hosted by: ${event.createdBy?.username || "Unknown"}</em><br />
+          <span>${event.eventDate} @ ${event.startTime}–${event.endTime}</span><br />
+          <span>${event.address}</span>
+        </li>
+      `).join("")
+    : "<li>No matching events</li>"
+  }
+</ul>
+
 
     <h3>Your Hosted Events</h3>
     <ul id="hostedEvents">
@@ -80,5 +83,7 @@ export default state => {
       </fieldset>
       <button type="submit">Update Interests</button>
     </form>
+
+    <button class="logoutButton" id="logoutButton">Logout</button>
   `;
 };
