@@ -322,13 +322,25 @@ router.on({
 
       const editEventButton = document.querySelector(".editEventsButton");
       if (editEventButton) {
-        console.log(" Found .editEventsButton, adding click listener");
+        console.log("✅ Found .editEventsButton, adding click listener");
         editEventButton.addEventListener("click", () => {
           console.log(" Edit Events button clicked, navigating...");
           router.navigate("/editEvents");
         });
+
       } else {
         console.warn(" .editEventsButton not found in DOM.");
+      }
+        const createEventButton = document.querySelector(".createEventButton");
+      if (createEventButton) {
+        console.log("✅ Found createEventButton, adding click listener");
+        createEventButton.addEventListener("click", () => {
+          console.log(" Edit Events button clicked, navigating...");
+          router.navigate("/createEvent");
+        });
+
+      } else {
+        console.warn(" .createEventButton not found in DOM.");
       }
 
     })
