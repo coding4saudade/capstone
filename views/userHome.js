@@ -6,6 +6,7 @@ const allInterests = [
 ];
 
 export default state => {
+  console.log("Rendering userHome with state:", state);
   const matchedEvents = state.events?.filter(event =>
     event.interests?.some(interest => state.interests?.includes(interest))
   );
