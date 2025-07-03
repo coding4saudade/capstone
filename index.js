@@ -5,8 +5,7 @@ import { camelCase } from "lodash";
 import axios from "axios";
 
 const router = new Navigo("/");
-window.router = router;
-window.store = store;
+
 
 function initializeSession() {
   const sessionUserJSON = localStorage.getItem("sessionUser");
@@ -177,6 +176,12 @@ router.hooks({
         isLoggedIn()
         store.createEvent.userId = store.session.user._id;
         store.createEvent.username = store.session.user.username;
+
+        form.addEventListener("submit", event => {
+          event.preventDefault();
+          const formData = new FormData(form);
+          const address = formData.get("eventAddress");
+        });
         done()
         break;
       case "updateEvent":
