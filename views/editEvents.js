@@ -2,12 +2,12 @@ import html from "html-literal";
 
 export default state => {
   // Get hosted events by current user
-
+console.log("!!!!!!state log", state)
 const currentUsername = state.username || state.user?.username;
 
-const hostedEvents = state.events?.filter(
-  event => event.createdBy?.username === currentUsername
-);
+// const hostedEvents = state.events?.filter(
+//   event => event.createdBy?.username === currentUsername
+// );
 
 
 
@@ -28,10 +28,10 @@ const hostedEvents = state.events?.filter(
   </div>
 </div>
 
-    ${hostedEvents?.length
+    ${state.events?.length
       ? `
         <ul id="editEventsList">
-          ${hostedEvents.map(event => `
+          ${state.events.map(event => `
             <li data-id="${event._id}" class="edit-event-item">
               <strong>${event.eventName}</strong><br />
               <span>${event.eventDate} @ ${event.startTime}–${event.endTime}</span><br />

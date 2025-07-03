@@ -82,7 +82,7 @@ const hostedEvents = state.events?.filter(event =>
           </label><br />
         `).join("")}
       </fieldset>
-      <button type="submit">Update Interests</button>
+      <button id="updateInterestButton" type="submit">Update Interests</button>
     </form>
 
     <button class="logoutButton" id="logoutButton">Logout</button>

@@ -13,7 +13,3 @@ export { default as editUser } from "./editUser";
 export { default as editEvents } from "./editEvents";
 export { default as session } from "./session";
 
-export const editEventsData = {
-  events: [],
-  view: "editEvents"
-};
