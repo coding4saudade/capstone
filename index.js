@@ -384,7 +384,7 @@ router.hooks({
         });
       }
     }
-    if (view === "createEvent" && store.session.user) {
+    if (view === "createEvent") {
       store.createEvent.createdBy = store.session.user._id;
 
       const form = document.querySelector("#eventForm"); // ✅ match your HTML
