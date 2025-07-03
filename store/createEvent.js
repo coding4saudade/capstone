@@ -6,8 +6,8 @@ export default {
   endTime: "",
   interests: [],
   visable: "public",
-  createdBy: null,
+  createdBy: "",
   view: "createEvent",
-   userId: "",
+  userId: "",
   username: ""
 };

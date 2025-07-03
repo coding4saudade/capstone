@@ -5,7 +5,7 @@ export default state => html`
   <form id="eventForm">
 
     <label for="createdBy">Created by:</label><br />
-    <input type="text" id="userName" name="createdBy" readonly /><br /><br />
+    <input type="text" id="userName" name="createdBy"  /><br /><br />
 
     <label for="eventName">Event Name:</label><br />
     <input type="text" id="eventName" name="eventName" required /><br /><br />
@@ -21,8 +21,6 @@ export default state => html`
         <option value="public">public</option>
 
     </select>
-
-
 
 
     <label for="eventDate">Date:</label><br />

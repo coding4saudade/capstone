@@ -379,6 +379,48 @@ router.hooks({
         });
       }
     }
+    if (view === "createEvent" && store.session.user) {
+      store.createEvent.createdBy = store.session.user._id;
+
+      const form = document.querySelector("#eventForm"); // ✅ match your HTML
+      const userNameInput = document.querySelector("#userName");
+
+      if (userNameInput) {
+        userNameInput.value = store.session.user.username; // populate display
+      }
+
+      if (form) {
+        form.addEventListener("submit", event => {
+          event.preventDefault();
+          const formData = new FormData(form);
+
+          const newEvent = {
+            eventName: formData.get("eventName"),
+            address: formData.get("eventAddress"), // match HTML field id
+            eventDate: formData.get("eventDate"),
+            startTime: formData.get("startTime"),
+            endTime: formData.get("endTime"),
+            visable: formData.get("visable"), // include visibility
+            interests: formData.getAll("interests"),
+            createdBy: store.session.user._id // inject directly from session
+          };
+
+          console.log("Creating event:", newEvent); // ✅ debug line
+
+          axios
+            .post("http://localhost:4000/events", newEvent)
+            .then(res => {
+              alert("Event created!");
+              router.navigate(`/userHome/${store.session.user._id}`);
+            })
+            .catch(err => {
+              console.error("Event creation failed:", err);
+              alert("Could not create event. Please try again.");
+            });
+        });
+      }
+    }
+
 
 
   }
