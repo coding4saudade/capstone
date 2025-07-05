@@ -17,7 +17,10 @@ const hostedEvents = state.events?.filter(event =>
   event.createdBy?.username === currentUsername
 );
 
+console.log("🧪 Weather state at render time:", state.weather);
+
   return html`
+
     <h2>Welcome back, ${state.username || state.user?.username || "User"}!</h2>
 
     ${state.weather?.city ? `

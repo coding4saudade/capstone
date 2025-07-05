@@ -31,6 +31,58 @@ function logout() {
   router.resolve();
 }
 
+function attachUserHomeListeners(){
+
+  const editEventButton = document.querySelector(".editEventsButton");
+  if (editEventButton) {
+    editEventButton.addEventListener("click", () => {
+      console.log("Edit Events button clicked");
+      router.navigate("/edit-events");
+    });
+  }
+
+  const createEventButton = document.querySelector(".createEventButton");
+  if (createEventButton) {
+    createEventButton.addEventListener("click", () => {
+      console.log("Create Event button clicked");
+      router.navigate("/create-event");
+    });
+  }
+
+  const logoutButton = document.querySelector(".logoutButton");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", () => {
+      console.log("Logout button clicked");
+      logout();
+      router.navigate("/home");
+    });
+  }
+
+  const form = document.querySelector("#interestsForm");
+  if (form) {
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const selected = formData.getAll("interests");
+      const userId = store.session.user._id;
+
+      axios
+        .put(`http://localhost:4000/users/${userId}`, { interests: selected })
+        .then(response => {
+          store.userHome.interests = response.data.interests;
+          render(store.userHome);
+          attachUserHomeListeners();  // reattaching listeners after render
+          showPopup("Interest updated");
+        })
+        .catch(error => {
+          alert("Could not update interests. Please try again.");
+        });
+    });
+  }
+}
+
+
+
 function isLoggedIn() {
   if (!store.session.user) {
     router.navigate("/view-not-found");
@@ -132,16 +184,7 @@ router.hooks({
 
       case "editEvents":
         isLoggedIn()
-        // axios.get("http://localhost:4000/events")
-        //   .then((response) => {
-        //     store.editEvents.events = response.data;
-        //     store.editEvents.user = store.session.user;
-        //     done();
-        //   })
-        //   .catch((err) => {
-        //     console.error("Failed to load events for editEvents:", err);
-        //     done();
-        //   });
+
 
         axios
           .get(`http://localhost:4000/events/user/${store.session.user._id}`)
@@ -173,16 +216,12 @@ router.hooks({
       //   });
       // break;
       case "createEvent":
-        isLoggedIn()
+        isLoggedIn(); // check user is logged in
+
         store.createEvent.userId = store.session.user._id;
         store.createEvent.username = store.session.user.username;
 
-        form.addEventListener("submit", event => {
-          event.preventDefault();
-          const formData = new FormData(form);
-          const address = formData.get("eventAddress");
-        });
-        done()
+        done(); //
         break;
       case "updateEvent":
 
@@ -331,100 +370,104 @@ router.hooks({
         });
       });
     }
-    if (view === "userHome") {
-      const editEventButton = document.querySelector(".editEventsButton");
+if (view === "userHome") {
+  axios
+    .get(`https://api.openweathermap.org/data/2.5/weather?q=St. Louis&units=imperial&appid=542793ec2898e42e6e2901f0da39637b`)
+    .then(res => {
+      store.userHome.weather = {
+        city: res.data.name,
+        description: res.data.weather?.[0]?.description,
+        temp: res.data.main?.temp,
+        feelsLike: res.data.main?.feels_like
+      };
 
-      console.log("✅ Found .editEventsButton, adding click listener");
-      editEventButton.addEventListener("click", () => {
-        console.log(" Edit Events button clicked, navigating...");
-        router.navigate("/edit-events");
-      });
+      render(store.userHome);
+      attachUserHomeListeners(); // Attaches listeners after rendering - i could not find the buttons without this
+    })
+    .catch(err => {
+      console.error("Weather API error:", err);
+      store.userHome.weather = {};
+      render(store.userHome);
+      attachUserHomeListeners(); // attaching listeners even if weather failed
+    });
+}
 
-      const createEventButton = document.querySelector(".createEventButton");
-      console.log("✅ Found createEventButton, adding click listener");
-      createEventButton.addEventListener("click", () => {
-        console.log(" Edit Events button clicked, navigating...");
-        router.navigate("/create-event");
-      });
 
-      const logoutButton = document.querySelector(".logoutButton");
-      console.log("✅ Found logoutButton, adding click listener");
-      logoutButton.addEventListener("click", () => {
-        console.log(" logoutButton clicked, navigating...");
-        logout()
-        router.navigate("/home");
-      });
-      const editEventsButton = document.querySelector(".editEventsButton");
-      console.log("editEventsButton found:", editEventsButton);
-      if (editEventsButton) {
-        editEventsButton.addEventListener("click", () => {
-          console.log("Navigating to /editEvents");
-          router.navigate("/editEvents");
-        });
-      }
+    if (view === "createEvent" && store.session.user) {
+      const form = document.querySelector("#eventForm");
+      console.log("⭐eventForm found in DOM!");
 
-      const form = document.querySelector("#interestsForm");
-      console.log("interestForm element:", form);
-      if (form) {
-        form.addEventListener("submit", event => {
-          event.preventDefault();
-          const formData = new FormData(form);
-          const selected = formData.getAll("interests");
-          const userId = store.session.user._id;
-          axios
-            .put(`http://localhost:4000/users/${userId}`, { interests: selected })
-            .then(response => {
-              store.userHome.interests = response.data.interests;
-              render(store.userHome);
-              showPopup("Interest updated");
-            })
-            .catch(error => {
-              alert("Could not update interests. Please try again.");
-            });
-        });
-      }
-    }
-    if (view === "createEvent") {
-      store.createEvent.createdBy = store.session.user._id;
-
-      const form = document.querySelector("#eventForm"); // ✅ match your HTML
       const userNameInput = document.querySelector("#userName");
-
       if (userNameInput) {
-        userNameInput.value = store.session.user.username; // populate display
+        userNameInput.value = store.session.user.username;
       }
 
-      if (form) {
-        form.addEventListener("submit", event => {
-          event.preventDefault();
-          const formData = new FormData(form);
+      form.addEventListener("submit", event => {
+        event.preventDefault();
 
-          const newEvent = {
-            eventName: formData.get("eventName"),
-            address: formData.get("eventAddress"), // match HTML field id
-            eventDate: formData.get("eventDate"),
-            startTime: formData.get("startTime"),
-            endTime: formData.get("endTime"),
-            visable: formData.get("visable"), // include visibility
-            interests: formData.getAll("interests"),
-            createdBy: store.session.user._id // inject directly from session
-          };
+        const formData = new FormData(form);
 
-          console.log("Creating event:", newEvent); // ✅ debug line
+        const street = formData.get("street") || "";
+        const city = formData.get("city") || "";
+        const state = formData.get("state") || "";
+        const postalCode = formData.get("postalCode") || "";
+        const country = formData.get("country") || "";
 
-          axios
-            .post("http://localhost:4000/events", newEvent)
-            .then(res => {
-              alert("Event created!");
-              router.navigate(`/userHome/${store.session.user._id}`);
-            })
-            .catch(err => {
-              console.error("Event creation failed:", err);
-              alert("Could not create event. Please try again.");
-            });
-        });
-      }
+        const addressParts = [street, city, state, postalCode, country].filter(Boolean);
+        const addressQuery = addressParts.join(", ");
+
+        if (!addressQuery) {
+          alert("Please enter a valid address.");
+          return;
+        }
+
+
+        const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          addressQuery
+        )}&format=json`;
+
+        fetch(geocodeUrl, {
+          headers: {
+            "Accept-Language": "en", // optional but helps with consistent results
+            "User-Agent": "Connextion/1.0 (info@email.com)" // Required if on server or backend
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (!data || data.length === 0) {
+              alert("Could not find location. Please check the address.");
+              return;
+            }
+
+            const { lat, lon } = data[0];
+
+            const newEvent = {
+              eventName: formData.get("eventName"),
+              address: addressQuery,
+              eventDate: formData.get("eventDate"),
+              startTime: formData.get("startTime"),
+              endTime: formData.get("endTime"),
+              visible: formData.get("visible"),
+              interests: formData.getAll("interests"),
+              createdBy: store.session.user._id,
+              latitude: parseFloat(lat), //parseFloat takes the string response and converts it to an actual number
+              longitude: parseFloat(lon)
+            };
+
+            return axios.post("http://localhost:4000/events", newEvent);
+          })
+          .then(() => {
+            alert("Event created!");
+            router.navigate(`/userHome/${store.session.user._id}`);
+          })
+          .catch(error => {
+            console.error("Error during geocoding or event creation:", error);
+            alert("Could not get location or create event. Please check your input.");
+          });
+      });
     }
+
+
 
 
 

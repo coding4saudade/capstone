@@ -16,10 +16,10 @@ export default state => html`
     <label for="address">Address:</label><br />
     <input type="text" id="address" name="address" value="${state.address}" required /><br /><br />
 
-    <label for="visable">Visibility:</label>
-    <select id="visable" name="visable" required>
-      <option value="public" ${state.visable === "public" ? "selected" : ""}>Public</option>
-      <option value="private" ${state.visable === "private" ? "selected" : ""}>Private</option>
+    <label for="visible">Visibility:</label>
+    <select id="visible" name="visible" required>
+      <option value="public" ${state.visible === "public" ? "selected" : ""}>Public</option>
+      <option value="private" ${state.visible === "private" ? "selected" : ""}>Private</option>
     </select><br /><br />
 
     <label for="eventDate">Date:</label><br />

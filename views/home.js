@@ -4,6 +4,8 @@ export default state => html`
 
 <h1> Heat Map of Events near you </h1>
 
+<div id="map" style="height: 600px;"></div>
+
 <div class="image-placeholder">
     Image Placeholder
   </div>

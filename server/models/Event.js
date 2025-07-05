@@ -24,7 +24,7 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
 
-  visable: {
+  visible: {
     type: String,
     enum: ["public", "private"],
     default: "public"

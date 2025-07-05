@@ -10,12 +10,25 @@ export default state => html`
     <label for="eventName">Event Name:</label><br />
     <input type="text" id="eventName" name="eventName" required /><br /><br />
 
-    <label for="eventAddress">Address:</label><br />
-    <input type="text" id="eventAddress" name="eventAddress" required /><br /><br />
+    <label for="street">Street Address:</label>
+    <input type="text" id="street" name="street" required />
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required />
+
+    <label for="state">State/Province:</label>
+    <input type="text" id="state" name="state" required />
+
+    <label for="postalCode">ZIP/Postal Code:</label>
+    <input type="text" id="postalCode" name="postalCode" />
+
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" required />
 
 
-    <label for="visable">Closed Event?</label>
-    <select id="visable" name="visable">
+
+    <label for="visible">Closed Event?</label>
+    <select id="visible" name="visible">
         <option value="" hidden>Private or Public event</option>
         <option value="private">private</option>
         <option value="public">public</option>
@@ -46,6 +59,7 @@ export default state => html`
       <label><input type="checkbox" name="interests" value="craftsmanship" /> Craftsmanship</label><br />
     </fieldset><br />
 
-    <button type="submit">Create Event</button>
+    <button type="submit" id="submitEventButton">Submit</button>
+
   </form>
 `;
