@@ -31,6 +31,9 @@ console.log("🧪 Weather state at render time:", state.weather);
     ` : "<h3>Loading weather data...</h3>"}
 
 <h3>Events Based on Your Interests</h3>
+
+<div id="interestMap"></div>
+
 <ul id="interestEvents">
   ${matchedEvents?.length
     ? matchedEvents.map(event => `

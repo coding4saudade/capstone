@@ -31,7 +31,7 @@ function logout() {
   router.resolve();
 }
 
-function attachUserHomeListeners(){
+function attachUserHomeListeners() {
 
   const editEventButton = document.querySelector(".editEventsButton");
   if (editEventButton) {
@@ -156,6 +156,29 @@ function showPopup(message, color = "#28a745", duration = 2000) {
   }, duration);
 }
 
+
+export function loadLeaflet() {
+  return new Promise(resolve => {
+    // Avoid reloading if already loaded
+    if (window.L) return resolve();
+
+    // Load Leaflet CSS
+    const leafletCSS = document.createElement("link");
+    leafletCSS.rel = "stylesheet";
+    leafletCSS.href = "https://unpkg.com/leaflet/dist/leaflet.css";
+    document.head.appendChild(leafletCSS);
+
+    // Load Leaflet JS
+    const leafletScript = document.createElement("script");
+    leafletScript.src = "https://unpkg.com/leaflet/dist/leaflet.js";
+    leafletScript.onload = resolve;
+    document.body.appendChild(leafletScript);
+  });
+}
+
+
+
+
 router.hooks({
   before: (done, match) => {
     initializeSession();
@@ -262,8 +285,8 @@ router.hooks({
     }
 
 
-
     if (view === "home") {
+      // Login form logic
       const form = document.querySelector("#loginForm");
       if (form) {
         form.addEventListener("submit", event => {
@@ -284,7 +307,78 @@ router.hooks({
             });
         });
       }
+
+      // Map loading logic
+      loadLeaflet().then(() => {
+        console.log("Map starting to load");
+
+        // Initialize the map centered on St. Louis
+        const map = L.map("map").setView([38.627, -90.1994], 10);
+        console.log("Map object:", map);
+
+        // Add OSM tile layer
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(map);
+
+        // Fetch real events from backend and add markers
+        axios.get("http://localhost:4000/events")
+          .then(res => {
+            const events = res.data.filter(e => e.latitude && e.longitude);
+
+            events.forEach(e => {
+              const icon = L.divIcon({
+                className: "custom-marker",
+                html: `<div style="background-color:blue;width:12px;height:12px;border-radius:50%;"></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+              });
+
+              L.marker([e.latitude, e.longitude], { icon })
+                .bindPopup(`<strong>${e.eventName}</strong><br>${e.address}`)
+                .addTo(map);
+            });
+          })
+          .catch(err => {
+            console.error("Error loading events:", err);
+          });
+
+        // Add marketing/demo dots across St. Louis city & county
+        const marketingDots = [
+          { lat: 38.6270, lon: -90.1994, label: "Downtown STL" },
+          { lat: 38.6316, lon: -90.2536, label: "The Hill" },
+          { lat: 38.6383, lon: -90.2843, label: "Forest Park" },
+          { lat: 38.5963, lon: -90.2273, label: "Tower Grove" },
+          { lat: 38.6141, lon: -90.2625, label: "Central West End" },
+          { lat: 38.6684, lon: -90.5130, label: "Chesterfield" },
+          { lat: 38.7401, lon: -90.3896, label: "Florissant" },
+          { lat: 38.5951, lon: -90.4471, label: "Kirkwood" },
+          { lat: 38.6276, lon: -90.3260, label: "University City" },
+          { lat: 38.6654, lon: -90.3781, label: "Hazelwood" },
+          { lat: 38.6360, lon: -90.3451, label: "Ladue" },
+          { lat: 38.5920, lon: -90.3836, label: "Webster Groves" },
+          { lat: 38.6745, lon: -90.4061, label: "Maryland Heights" },
+          { lat: 38.5521, lon: -90.4762, label: "Sunset Hills" },
+          { lat: 38.6558, lon: -90.2932, label: "Richmond Heights" }
+        ];
+
+        marketingDots.forEach(dot => {
+          L.circleMarker([dot.lat, dot.lon], {
+            radius: 8,
+            fillColor: "blue",
+            color: "blue",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 1
+          })
+            .addTo(map)
+            .bindTooltip(dot.label, { direction: "top" });
+        });
+      });
     }
+
+
+
 
     if (view === "createUser") {
       const registerForm = document.querySelector("#registerForm");
@@ -370,27 +464,104 @@ router.hooks({
         });
       });
     }
-if (view === "userHome") {
-  axios
-    .get(`https://api.openweathermap.org/data/2.5/weather?q=St. Louis&units=imperial&appid=542793ec2898e42e6e2901f0da39637b`)
-    .then(res => {
-      store.userHome.weather = {
-        city: res.data.name,
-        description: res.data.weather?.[0]?.description,
-        temp: res.data.main?.temp,
-        feelsLike: res.data.main?.feels_like
-      };
 
-      render(store.userHome);
-      attachUserHomeListeners(); // Attaches listeners after rendering - i could not find the buttons without this
-    })
-    .catch(err => {
-      console.error("Weather API error:", err);
-      store.userHome.weather = {};
-      render(store.userHome);
-      attachUserHomeListeners(); // attaching listeners even if weather failed
-    });
-}
+    if (view === "userHome") {
+      // First, fetch weather data for St. Louis
+      axios
+        .get(`https://api.openweathermap.org/data/2.5/weather?q=St. Louis&units=imperial&appid=542793ec2898e42e6e2901f0da39637b`)
+        .then(res => {
+          // Store weather data in the state
+          store.userHome.weather = {
+            city: res.data.name,
+            description: res.data.weather?.[0]?.description,
+            temp: res.data.main?.temp,
+            feelsLike: res.data.main?.feels_like
+          };
+
+          // Render the page with weather data
+          render(store.userHome);
+
+          // Attach event listeners (buttons, forms, etc.)
+          attachUserHomeListeners();
+
+          // After render, load the map showing events matching user interests
+          loadLeaflet().then(() => {
+            // Filter events that match user's interests
+            const matchedEvents = store.events.filter(event =>
+              event.interests?.some(interest => store.session.user.interests.includes(interest))
+            );
+
+            // Calculate center of map: average lat/lon of matched events or default to STL center
+            let center = [38.627, -90.1994];
+            if (matchedEvents.length > 0) {
+              const avgLat = matchedEvents.reduce((sum, e) => sum + e.latitude, 0) / matchedEvents.length;
+              const avgLon = matchedEvents.reduce((sum, e) => sum + e.longitude, 0) / matchedEvents.length;
+              center = [avgLat, avgLon];
+            }
+
+            // Initialize Leaflet map in the #interestMap div
+            const map = L.map("interestMap").setView(center, 10);
+
+            // Add OpenStreetMap tile layer
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(map);
+
+            // Add blue dot markers for each matched event with popup info
+            matchedEvents.forEach(event => {
+              const icon = L.divIcon({
+                className: "custom-marker",
+                html: `<div style="background-color: blue; width: 12px; height: 12px; border-radius: 50%;"></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+              });
+
+              L.marker([event.latitude, event.longitude], { icon })
+                .bindPopup(`<strong>${event.eventName}</strong><br>${event.address}`)
+                .addTo(map);
+            });
+          });
+        })
+        .catch(err => {
+          console.error("Weather API error:", err);
+          store.userHome.weather = {};
+          render(store.userHome);
+          attachUserHomeListeners();
+          // Even if weather fails, still try to load the map
+          loadLeaflet().then(() => {
+            // Same map code as above, so you could refactor it into a function later
+            const matchedEvents = store.events.filter(event =>
+              event.interests?.some(interest => store.session.user.interests.includes(interest))
+            );
+
+            let center = [38.627, -90.1994];
+            if (matchedEvents.length > 0) {
+              const avgLat = matchedEvents.reduce((sum, e) => sum + e.latitude, 0) / matchedEvents.length;
+              const avgLon = matchedEvents.reduce((sum, e) => sum + e.longitude, 0) / matchedEvents.length;
+              center = [avgLat, avgLon];
+            }
+
+            const map = L.map("interestMap").setView(center, 10);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(map);
+
+            matchedEvents.forEach(event => {
+              const icon = L.divIcon({
+                className: "custom-marker",
+                html: `<div style="background-color: blue; width: 12px; height: 12px; border-radius: 50%;"></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+              });
+
+              L.marker([event.latitude, event.longitude], { icon })
+                .bindPopup(`<strong>${event.eventName}</strong><br>${event.address}`)
+                .addTo(map);
+            });
+          });
+        });
+    }
 
 
     if (view === "createEvent" && store.session.user) {
@@ -428,7 +599,7 @@ if (view === "userHome") {
 
         fetch(geocodeUrl, {
           headers: {
-            "Accept-Language": "en", // optional but helps with consistent results
+            "Accept-Language": "en", // helps with consistent results per documentation
             "User-Agent": "Connextion/1.0 (info@email.com)" // Required if on server or backend
           }
         })

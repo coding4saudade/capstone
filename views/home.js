@@ -2,14 +2,9 @@ import html from "html-literal"
 
 export default state => html`
 
-<h1> Heat Map of Events near you </h1>
+<h1> Events near you </h1>
 
-<div id="map" style="height: 600px;"></div>
-
-<div class="image-placeholder">
-    Image Placeholder
-  </div>
-
+<div id="map"></div>
 
 <h1>Login to join the fun</h1>
 <form id="loginForm" >
