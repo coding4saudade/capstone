@@ -3,181 +3,20 @@ import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
 import axios from "axios";
+import {
+  initializeSession,
+  logout,
+  attachUserHomeListeners,
+  isLoggedIn,
+  render,
+  showDeleteConfirmation,
+  showPopup,
+  loadLeaflet,
+  renderEventMap
+} from "./utils/utils.js";
 
 const router = new Navigo("/");
-
-
-function initializeSession() {
-  const sessionUserJSON = localStorage.getItem("sessionUser");
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-  if (sessionUserJSON && isLoggedIn) {
-    store.session.user = JSON.parse(sessionUserJSON);
-    store.session.isLoggedIn = true;
-    console.log("Session restored:", store.session.user);
-  } else {
-    store.session.user = null;
-    store.session.isLoggedIn = false;
-  }
-}
-
-function logout() {
-  store.session.user = null;
-  store.session.isLoggedIn = false;
-  localStorage.removeItem("sessionUser");
-  localStorage.removeItem("isLoggedIn");
-  console.log("User logged out");
-  router.navigate("/");
-  router.resolve();
-}
-
-function attachUserHomeListeners() {
-
-  const editEventButton = document.querySelector(".editEventsButton");
-  if (editEventButton) {
-    editEventButton.addEventListener("click", () => {
-      console.log("Edit Events button clicked");
-      router.navigate("/edit-events");
-    });
-  }
-
-  const createEventButton = document.querySelector(".createEventButton");
-  if (createEventButton) {
-    createEventButton.addEventListener("click", () => {
-      console.log("Create Event button clicked");
-      router.navigate("/create-event");
-    });
-  }
-
-  const logoutButton = document.querySelector(".logoutButton");
-  if (logoutButton) {
-    logoutButton.addEventListener("click", () => {
-      console.log("Logout button clicked");
-      logout();
-      router.navigate("/home");
-    });
-  }
-
-  const form = document.querySelector("#interestsForm");
-  if (form) {
-    form.addEventListener("submit", event => {
-      event.preventDefault();
-      const formData = new FormData(form);
-      const selected = formData.getAll("interests");
-      const userId = store.session.user._id;
-
-      axios
-        .put(`http://localhost:4000/users/${userId}`, { interests: selected })
-        .then(response => {
-          store.userHome.interests = response.data.interests;
-          render(store.userHome);
-          attachUserHomeListeners();  // reattaching listeners after render
-          showPopup("Interest updated");
-        })
-        .catch(error => {
-          alert("Could not update interests. Please try again.");
-        });
-    });
-  }
-}
-
-
-
-function isLoggedIn() {
-  if (!store.session.user) {
-    router.navigate("/view-not-found");
-    return false
-  }
-  return true
-}
-
-function render(state = store.home) {
-  console.log("Rendering view:", state.view);
-  document.querySelector("#root").innerHTML = `
-    ${components.header(state)}
-    ${components.nav(store.links)}
-    <div class="centered-content">
-      ${components.main(state)}
-      ${components.footer()}
-    </div>
-    <div id="global-popup" class="popup hidden"></div>
-    <div id="delete-popup" class="popup hidden"></div>
-  `;
-  router.updatePageLinks();
-  console.log("Rendering view:", state);
-}
-
-function showDeleteConfirmation({ eventId, eventName, eventDate }) {
-  const popup = document.getElementById("delete-popup");
-  if (!popup) return;
-
-  popup.innerHTML = `
-    <div class="popup-content">
-      <h3>Delete Event?</h3>
-      <p><strong>${eventName}</strong></p>
-      <p>Date: ${eventDate}</p>
-      <div class="popup-actions">
-        <button id="confirm-delete" class="danger">Delete!</button>
-        <button id="cancel-delete">Cancel</button>
-      </div>
-    </div>
-  `;
-
-  popup.classList.remove("hidden");
-
-  document.getElementById("cancel-delete").addEventListener("click", () => {
-    popup.classList.add("hidden");
-  });
-
-  document.getElementById("confirm-delete").addEventListener("click", () => {
-    axios
-      .delete(`http://localhost:4000/events/${eventId}`)
-      .then(() => {
-        popup.classList.add("hidden");
-        showPopup("Event deleted", "#cc0000");
-        router.navigate(`/userHome/${store.session.user._id}`);
-        router.resolve();
-      })
-      .catch(err => {
-        console.error("Failed to delete event:", err);
-        alert("Failed to delete event. Try again.");
-      });
-  });
-}
-
-function showPopup(message, color = "#28a745", duration = 2000) {
-  const popup = document.getElementById("global-popup");
-  if (!popup) return;
-  popup.textContent = message;
-  popup.style.backgroundColor = color;
-  popup.classList.remove("hidden");
-  setTimeout(() => {
-    popup.classList.add("hidden");
-  }, duration);
-}
-
-
-export function loadLeaflet() {
-  return new Promise(resolve => {
-    // Avoid reloading if already loaded
-    if (window.L) return resolve();
-
-    // Load Leaflet CSS
-    const leafletCSS = document.createElement("link");
-    leafletCSS.rel = "stylesheet";
-    leafletCSS.href = "https://unpkg.com/leaflet/dist/leaflet.css";
-    document.head.appendChild(leafletCSS);
-
-    // Load Leaflet JS
-    const leafletScript = document.createElement("script");
-    leafletScript.src = "https://unpkg.com/leaflet/dist/leaflet.js";
-    leafletScript.onload = resolve;
-    document.body.appendChild(leafletScript);
-  });
-}
-
-
-
+export default router;
 
 router.hooks({
   before: (done, match) => {
@@ -187,7 +26,7 @@ router.hooks({
     switch (view) {
       case "userHome":
         const userId = match.data.id;
-        console.log("!!!!!!userID!!!", match.data)
+        console.log("!!!!!!userID!!!", match.data);
         Promise.all([
           axios.get(`http://localhost:4000/users/${userId}`),
           axios.get("http://localhost:4000/events")
@@ -206,20 +45,17 @@ router.hooks({
         break;
 
       case "editEvents":
-        isLoggedIn()
-
+        isLoggedIn();
 
         axios
           .get(`http://localhost:4000/events/user/${store.session.user._id}`)
           .then(response => {
-
             store.editEvents.events = response.data;
-            done()
+            done();
           })
           .catch(error => {
             console.error("Failed to load events for editEvents:", error);
             router.navigate("/view-not-found");
-
           });
 
         break;
@@ -258,12 +94,11 @@ router.hooks({
               view: "updateEvent"
             };
             //store.updateEvent.event = response.data;
-            done()
+            done();
           })
           .catch(error => {
             console.error("Error loading event for update:", error);
             router.navigate("/view-not-found");
-
           });
 
         break;
@@ -276,14 +111,13 @@ router.hooks({
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
     console.log("After hook running for view:", view);
 
-    const barsIcon = document.querySelector(".fa-bars");
-    if (barsIcon) {
-      barsIcon.addEventListener("click", () => {
-        const navUl = document.querySelector("nav > ul");
-        if (navUl) navUl.classList.toggle("hidden--mobile");
-      });
-    }
-
+    // const barsIcon = document.querySelector(".fa-bars");
+    // if (barsIcon) {
+    //   barsIcon.addEventListener("click", () => {
+    //     const navUl = document.querySelector("nav > ul");
+    //     if (navUl) navUl.classList.toggle("hidden--mobile");
+    //   });
+    // }
 
     if (view === "home") {
       // Login form logic
@@ -377,24 +211,61 @@ router.hooks({
       });
     }
 
-
-
-
     if (view === "createUser") {
       const registerForm = document.querySelector("#registerForm");
       if (registerForm) {
         registerForm.addEventListener("submit", event => {
           event.preventDefault();
+
           const formData = new FormData(registerForm);
-          const newUser = {
-            username: formData.get("username").toLowerCase(),
-            email: formData.get("email").toLowerCase(),
-            startingAddress: formData.get("startingAddress"),
-            interests: formData.getAll("interests")
-          };
-          axios
-            .post("http://localhost:4000/users", newUser)
+
+
+          const street = formData.get("street") || "";
+          const city = formData.get("city") || "";
+          const state = formData.get("state") || "";
+          const postalCode = formData.get("postalCode") || "";
+          const country = formData.get("country") || "";
+
+          const addressParts = [street, city, state, postalCode, country].filter(Boolean);
+          const addressQuery = addressParts.join(", ");
+
+          if (!addressQuery) {
+            alert("Please enter a valid address.");
+            return;
+          }
+
+
+          const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addressQuery)}&format=json`;
+
+          fetch(geocodeUrl, {
+            headers: {
+              "Accept-Language": "en",
+              "User-Agent": "Connextion/1.0 (info@email.com)" // Change this if needed
+            }
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (!data || data.length === 0) {
+                alert("Could not find location. Please check the address.");
+                return;
+              }
+
+              const { lat, lon } = data[0];
+
+              const newUser = {
+                username: formData.get("username").toLowerCase(),
+                email: formData.get("email").toLowerCase(),
+                startingAddress: addressQuery,
+                latitude: parseFloat(lat),
+                longitude: parseFloat(lon),
+                interests: formData.getAll("interests")
+              };
+
+              return axios.post("http://localhost:4000/users", newUser);
+            })
             .then(res => {
+              if (!res) return; //
+
               store.session.user = res.data;
               store.session.isLoggedIn = true;
               localStorage.setItem("sessionUser", JSON.stringify(res.data));
@@ -402,12 +273,13 @@ router.hooks({
               router.navigate(`/userHome/${res.data._id}`);
             })
             .catch(err => {
-              console.error("Failed to create user:", err);
-              alert("Could not create user. Try a different username or check your input.");
+              console.error("Failed to create user or geocode address:", err);
+              alert("Could not create user. Please check your input and try again.");
             });
         });
       }
     }
+
 
     if (view === "updateEvent") {
       const updateForm = document.querySelector("#updateEventForm");
@@ -466,101 +338,113 @@ router.hooks({
     }
 
     if (view === "userHome") {
-      // First, fetch weather data for St. Louis
-      axios
-        .get(`https://api.openweathermap.org/data/2.5/weather?q=St. Louis&units=imperial&appid=542793ec2898e42e6e2901f0da39637b`)
-        .then(res => {
-          // Store weather data in the state
-          store.userHome.weather = {
-            city: res.data.name,
-            description: res.data.weather?.[0]?.description,
-            temp: res.data.main?.temp,
-            feelsLike: res.data.main?.feels_like
-          };
+      axios.get("http://localhost:4000/events").then(res => {
+        store.events = res.data;
 
-          // Render the page with weather data
-          render(store.userHome);
+        axios
+          .get(`https://api.openweathermap.org/data/2.5/weather?q=St. Louis&units=imperial&appid=542793ec2898e42e6e2901f0da39637b`)
+          .then(res => {
+            store.userHome.weather = {
+              city: res.data.name,
+              description: res.data.weather?.[0]?.description,
+              temp: res.data.main?.temp,
+              feelsLike: res.data.main?.feels_like
+            };
 
-          // Attach event listeners (buttons, forms, etc.)
-          attachUserHomeListeners();
+            render(store.userHome);
+            attachUserHomeListeners();
 
-          // After render, load the map showing events matching user interests
-          loadLeaflet().then(() => {
-            // Filter events that match user's interests
-            const matchedEvents = store.events.filter(event =>
-              event.interests?.some(interest => store.session.user.interests.includes(interest))
-            );
+            loadLeaflet().then(() => {
+              const userLat = store.session.user?.latitude || 38.627;
+              const userLon = store.session.user?.longitude || -90.1994;
 
-            // Calculate center of map: average lat/lon of matched events or default to STL center
-            let center = [38.627, -90.1994];
-            if (matchedEvents.length > 0) {
-              const avgLat = matchedEvents.reduce((sum, e) => sum + e.latitude, 0) / matchedEvents.length;
-              const avgLon = matchedEvents.reduce((sum, e) => sum + e.longitude, 0) / matchedEvents.length;
-              center = [avgLat, avgLon];
-            }
+              const map = L.map("interestsMap").setView([userLat, userLon], 12);
+              console.log("Map centered on:", userLat, userLon);
 
-            // Initialize Leaflet map in the #interestMap div
-            const map = L.map("interestMap").setView(center, 10);
+              L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors"
+              }).addTo(map);
 
-            // Add OpenStreetMap tile layer
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-              attribution: "&copy; OpenStreetMap contributors"
-            }).addTo(map);
-
-            // Add blue dot markers for each matched event with popup info
-            matchedEvents.forEach(event => {
-              const icon = L.divIcon({
-                className: "custom-marker",
-                html: `<div style="background-color: blue; width: 12px; height: 12px; border-radius: 50%;"></div>`,
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
+              // Google style User location blue dot
+              const userIcon = L.icon({
+                iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png", // replace this with your choice
+                iconSize: [32, 32],   // size of the icon
+                iconAnchor: [16, 32], // point of the icon which corresponds to marker's location
+                popupAnchor: [0, -32] // point from which the popup should open relative to the iconAnchor
               });
 
-              L.marker([event.latitude, event.longitude], { icon })
-                .bindPopup(`<strong>${event.eventName}</strong><br>${event.address}`)
-                .addTo(map);
+              L.marker([userLat, userLon], { icon: userIcon })
+                .addTo(map)
+                .bindPopup("📍 You Are Here");
+
+
+              // Only event markers where interests match user interests (green)
+              store.events
+                .filter(e => e.latitude && e.longitude && e.interests.some(interest => store.session.user.interests.includes(interest)))
+                .forEach(e => {
+                  const eventIcon = L.divIcon({
+                    className: "event-marker",
+                    html: `<div style="background-color:green;width:12px;height:12px;border-radius:50%;"></div>`,
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                  });
+
+                  L.marker([e.latitude, e.longitude], { icon: eventIcon })
+                    .bindPopup(`<strong>${e.eventName}</strong><br>${e.address}`)
+                    .addTo(map);
+                });
             });
-          });
-        })
-        .catch(err => {
-          console.error("Weather API error:", err);
-          store.userHome.weather = {};
-          render(store.userHome);
-          attachUserHomeListeners();
-          // Even if weather fails, still try to load the map
-          loadLeaflet().then(() => {
-            // Same map code as above, so you could refactor it into a function later
-            const matchedEvents = store.events.filter(event =>
-              event.interests?.some(interest => store.session.user.interests.includes(interest))
-            );
+          })
+          .catch(err => {
+            console.error("Weather API error:", err);
+            store.userHome.weather = {};
 
-            let center = [38.627, -90.1994];
-            if (matchedEvents.length > 0) {
-              const avgLat = matchedEvents.reduce((sum, e) => sum + e.latitude, 0) / matchedEvents.length;
-              const avgLon = matchedEvents.reduce((sum, e) => sum + e.longitude, 0) / matchedEvents.length;
-              center = [avgLat, avgLon];
-            }
+            render(store.userHome);
+            attachUserHomeListeners();
+            //repeating map code if weather API fails, so the page still loads.  I need to reform this into a function later
+            loadLeaflet().then(() => {
+              const userLat = store.session.user?.latitude || 38.627;
+              const userLon = store.session.user?.longitude || -90.1994;
 
-            const map = L.map("interestMap").setView(center, 10);
+              const map = L.map("interestsMap").setView([userLat, userLon], 12);
+              console.log("Map centered on:", userLat, userLon);
 
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-              attribution: "&copy; OpenStreetMap contributors"
-            }).addTo(map);
+              L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors"
+              }).addTo(map);
 
-            matchedEvents.forEach(event => {
-              const icon = L.divIcon({
-                className: "custom-marker",
-                html: `<div style="background-color: blue; width: 12px; height: 12px; border-radius: 50%;"></div>`,
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
+
+              // Google style User location blue dot
+              const userIcon = L.icon({
+                iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
               });
 
-              L.marker([event.latitude, event.longitude], { icon })
-                .bindPopup(`<strong>${event.eventName}</strong><br>${event.address}`)
-                .addTo(map);
+              L.marker([userLat, userLon], { icon: userIcon })
+                .addTo(map)
+                .bindPopup("📍 You Are Here");
+
+
+              // Only event markers where interests match user interests (green)
+              store.events
+                .filter(e => e.latitude && e.longitude && e.interests.some(interest => store.session.user.interests.includes(interest)))
+                .forEach(e => {
+                  const eventIcon = L.divIcon({
+                    className: "event-marker",
+                    html: `<div style="background-color:green;width:12px;height:12px;border-radius:50%;"></div>`,
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                  });
+
+                  L.marker([e.latitude, e.longitude], { icon: eventIcon })
+                    .bindPopup(`<strong>${e.eventName}</strong><br>${e.address}`)
+                    .addTo(map);
+                });
             });
           });
-        });
+      });
     }
 
 
@@ -592,7 +476,6 @@ router.hooks({
           return;
         }
 
-
         const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
           addressQuery
         )}&format=json`;
@@ -600,7 +483,7 @@ router.hooks({
         fetch(geocodeUrl, {
           headers: {
             "Accept-Language": "en", // helps with consistent results per documentation
-            "User-Agent": "Connextion/1.0 (info@email.com)" // Required if on server or backend
+            "User-Agent": "Connextion/1.0 (info@email.com)" // Required if on server or backend per documentation
           }
         })
           .then(res => res.json())
@@ -622,7 +505,7 @@ router.hooks({
               interests: formData.getAll("interests"),
               createdBy: store.session.user._id,
               latitude: parseFloat(lat), //parseFloat takes the string response and converts it to an actual number
-              longitude: parseFloat(lon)
+              longitude: parseFloat(lon) // lat and lon are returned from API as a string
             };
 
             return axios.post("http://localhost:4000/events", newEvent);
@@ -636,12 +519,18 @@ router.hooks({
             alert("Could not get location or create event. Please check your input.");
           });
       });
+
     }
+    // add menu toggle to bars icon in nav bar
 
 
 
+    document.querySelector(".fa-bars").addEventListener("click", () => {
+       console.log("Fa-bars clicked" )
 
+      document.querySelector("nav > ul").classList.toggle("hidden--mobile");
 
+    });
   }
 });
 
@@ -664,6 +553,5 @@ router.on({
     }
   }
 });
-
 
 router.resolve();

@@ -9,8 +9,24 @@ export default state => html`
     <label for="email">Email:</label><br />
     <input type="email" id="email" name="email" required /><br /><br />
 
-    <label for="startingAddress">Starting Address:</label><br />
-    <input type="startingAddress" id="startingAddress" name="startingAddress" required /><br /><br />
+    <!-- <label for="startingAddress">Starting Address:</label><br />
+    <input type="startingAddress" id="startingAddress" name="startingAddress" required /><br /><br /> -->
+
+
+    <label for="street">Street Address:</label>
+    <input type="text" id="street" name="street" required />
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required />
+
+    <label for="state">State/Province:</label>
+    <input type="text" id="state" name="state" required />
+
+    <label for="postalCode">ZIP/Postal Code:</label>
+    <input type="text" id="postalCode" name="postalCode" />
+
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" required />
 
 
 

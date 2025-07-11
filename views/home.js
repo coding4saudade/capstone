@@ -1,6 +1,21 @@
+
 import html from "html-literal"
 
+
+
 export default state => html`
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Connextion
+
+      </h1>
+      <p>Discover, share, and join events that bring community together.</p>
+      <button type="submit" class="btn">Sign Up</button>
+
+    </div>
+  </section>
+
 
 <h1> Events near you </h1>
 
@@ -14,7 +29,7 @@ export default state => html`
   <!-- <label for="loginPassword">Password:</label><br>
   <input type="password" id="loginPassword" name="loginPassword" required><br><br> -->
 
-  <button type="submit">Login</button>
+  <button type="submit" class="btn">Login</button>
 </form>
 
 <p class="signup-link">

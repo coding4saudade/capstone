@@ -19,7 +19,11 @@ const userSchema = new mongoose.Schema({
 
   },
 
-  interests: [String]
+  interests: [String],
+
+  latitude: Number,
+
+  longitude: Number
 });
 
 const User = mongoose.model("User", userSchema);

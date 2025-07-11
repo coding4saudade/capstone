@@ -32,7 +32,8 @@ console.log("🧪 Weather state at render time:", state.weather);
 
 <h3>Events Based on Your Interests</h3>
 
-<div id="interestMap"></div>
+<div id="interestsMap" style="height: 400px;"></div>
+
 
 <ul id="interestEvents">
   ${matchedEvents?.length
