@@ -28,8 +28,8 @@ router.hooks({
         const userId = match.data.id;
         console.log("!!!!!!userID!!!", match.data);
         Promise.all([
-          axios.get(`http://localhost:4000/users/${userId}`),
-          axios.get("http://localhost:4000/events")
+          axios.get(`${process.env.CONNECTION_API_URL}/users/${userId}`),
+          axios.get(`${process.env.CONNECTION_API_URL}/events`)
         ])
           .then(([userResponse, eventResponse]) => {
             Object.assign(store.userHome, userResponse.data);
@@ -48,7 +48,7 @@ router.hooks({
         isLoggedIn();
 
         axios
-          .get(`http://localhost:4000/events/user/${store.session.user._id}`)
+          .get(`${process.env.CONNECTION_API_URL}/events/user/${store.session.user._id}`)
           .then(response => {
             store.editEvents.events = response.data;
             done();
@@ -86,7 +86,7 @@ router.hooks({
 
         const eventId = match.data.id;
         axios
-          .get(`http://localhost:4000/events/${eventId}`)
+          .get(`${process.env.CONNECTION_API_URL}/events/${eventId}`)
           .then(response => {
             store.updateEvent = {
               ...response.data,
@@ -156,7 +156,7 @@ router.hooks({
         }).addTo(map);
 
         // Fetch real events from backend and add markers
-        axios.get("http://localhost:4000/events")
+        axios.get(`${process.env.CONNECTION_API_URL}/events`)
           .then(res => {
             const events = res.data.filter(e => e.latitude && e.longitude);
 
@@ -261,7 +261,7 @@ router.hooks({
                 interests: formData.getAll("interests")
               };
 
-              return axios.post("http://localhost:4000/users", newUser);
+              return axios.post(`${process.env.CONNECTION_API_URL}/users`, newUser);
             })
             .then(res => {
               if (!res) return; //
@@ -298,7 +298,7 @@ router.hooks({
             interests: formData.getAll("interests")
           };
           axios
-            .put(`http://localhost:4000/events/${store.updateEvent._id}`, eventData)
+            .put(`${process.env.CONNECTION_API_URL}/events/${store.updateEvent._id}`, eventData)
             .then(response => {
               router.navigate(`/userHome/${store.session.user._id}`);
             })
@@ -338,7 +338,7 @@ router.hooks({
     }
 
     if (view === "userHome") {
-      axios.get("http://localhost:4000/events").then(res => {
+      axios.get(`${process.env.CONNECTION_API_URL}/events`).then(res => {
         store.events = res.data;
       console.log("store.events", store.events)
         axios
@@ -508,7 +508,7 @@ router.hooks({
               longitude: parseFloat(lon) // lat and lon are returned from API as a string
             };
 
-            return axios.post("http://localhost:4000/events", newEvent);
+            return axios.post(`${process.env.CONNECTION_API_URL}/events`, newEvent);
           })
           .then(() => {
             alert("Event created!");
