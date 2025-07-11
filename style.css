@@ -1,6 +1,8 @@
 /*  BASE STYLES  */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -108,13 +110,14 @@ footer {
   text-align: center;
 }
 
-.footer-nav a {
+.nav-footer a {
   color: white;
   margin: 0 0.5rem;
   text-decoration: none;
+
 }
 
-.footer-nav a:hover {
+.nav-footer a:hover {
   text-decoration: underline;
 }
 
@@ -153,7 +156,7 @@ input[type="password"] {
   border-radius: 4px;
 }
 
-form > input[type="submit"] {
+form>input[type="submit"] {
   width: 40%;
   margin: 0.5rem;
   margin-right: auto;
@@ -363,17 +366,17 @@ button:hover,
     flex-direction: column;
   }
 
-  nav > i {
+  nav>i {
     padding: 1rem;
     font-size: 2em;
   }
 
-  nav > ul {
+  nav>ul {
     flex-direction: column;
     align-items: center;
   }
 
-  nav > ul > li {
+  nav>ul>li {
     padding: 0.5rem;
   }
 
@@ -386,12 +389,12 @@ button:hover,
 }
 
 @media (min-width: 550px) {
-  nav > ul {
+  nav>ul {
     justify-content: space-evenly;
     padding: 0;
   }
 
-  nav > .fa-bars {
+  nav>.fa-bars {
     display: none;
   }
 
@@ -417,6 +420,15 @@ nav {
   padding: 10px 20px;
   color: white;
 }
+
+.nav-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+
+}
+
 
 .nav-left {
   display: flex;
@@ -459,4 +471,3 @@ nav {
 .nav-links li a:hover {
   text-decoration: underline;
 }
-
