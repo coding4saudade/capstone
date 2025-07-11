@@ -447,3 +447,74 @@ router.on({
 
 
 router.resolve();
+
+
+export function renderEventMap(events, userInterests) {
+  console.log("renderEventMap called");
+  console.log("events param:", events);
+  console.log("userInterests param:", userInterests);
+
+
+  const mapContainer = document.getElementById("interestMap");
+  console.log("mapContainer:", mapContainer);
+
+  if (!mapContainer) {
+    console.warn("No #interestMap div found. Skipping map render.");
+    return;
+  }
+
+  if (mapContainer._leaflet_id) {
+    console.log("Existing Leaflet map found. Removing it.");
+    mapContainer._leaflet_id = null;
+    mapContainer.innerHTML = "";
+  } else {
+    console.log("No existing Leaflet map instance found.");
+  }
+
+  // Filter matched events
+  const matchedEvents = events.filter(event =>
+    event.interests?.some(interest => userInterests.includes(interest))
+  );
+  console.log("matchedEvents:", matchedEvents);
+
+  // Calculate center coordinates
+  let center = [38.627, -90.1994];
+  if (matchedEvents.length > 0) {
+    const avgLat = matchedEvents.reduce((sum, e) => sum + e.latitude, 0) / matchedEvents.length;
+    const avgLon = matchedEvents.reduce((sum, e) => sum + e.longitude, 0) / matchedEvents.length;
+    center = [avgLat, avgLon];
+  }
+  console.log("map center set to:", center);
+
+  // Initialize Leaflet map
+  const map = L.map("interestMap").setView(center, 10);
+  console.log("Leaflet map initialized:", map);
+
+  // Add OSM tiles
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+  console.log("Tile layer added");
+
+  // Add markers for matched events
+  matchedEvents.forEach(event => {
+    console.log("Adding marker for event:", event.eventName);
+    const icon = L.divIcon({
+      className: "custom-marker",
+      html: `<div style="background-color: blue; width: 12px; height: 12px; border-radius: 50%;"></div>`,
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+
+    L.marker([event.latitude, event.longitude], { icon })
+      .bindPopup(`<strong>${event.eventName}</strong><br>${event.address}`)
+      .addTo(map);
+  });
+
+  console.log("All markers added");
+}
+
+export function renderEventMapByInterest() {
+  renderEventMap(store.events, store.session.user.interests);
+}
+
