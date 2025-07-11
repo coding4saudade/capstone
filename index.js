@@ -127,7 +127,7 @@ router.hooks({
           event.preventDefault();
           const username = event.target.loginUsername.value.toLowerCase();
           axios
-            .get(`http://localhost:4000/users/username/${username}`)
+            .get(`${process.env.CONNECTION_API_URL}/users/username/${username}`)
             .then(res => {
               store.session.user = res.data;
               store.session.isLoggedIn = true;
