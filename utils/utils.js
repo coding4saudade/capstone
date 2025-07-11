@@ -240,51 +240,52 @@ export function renderEventMapByInterest() {
   renderEventMap(store.events, store.session.user.interests);
 }
 
-export function renderEventMapAllEvents() {
-  //guard statement, page breaks if event data is not loaded
-  //using return to exit function
-  if (!store.events) return;
+// export function renderEventMapAllEvents() {
+//   //guard statement, page breaks if event data is not loaded
+//   //using return to exit function
+//   if (!store.events) return;
 
 
-  const allInterests = [];
+//   const allInterests = [];
 
 
-  //find ID of interestMap
-  const mapContainer = document.getElementById("interestMap");
-  //console.log("✅ mapContainer found:", mapContainer);
+//   //find ID of interestMap
+//   const mapContainer = document.getElementById("interestMap");
+//   //console.log("✅ mapContainer found:", mapContainer);
 
-  if (!mapContainer) return;
+//   if (!mapContainer) return;
 
-  if (mapContainer._leaflet_id) {
-    mapContainer._leaflet_id = null;
-    mapContainer.innerHTML = "";
-  }
+//   if (mapContainer._leaflet_id) {
+//     mapContainer._leaflet_id = null;
+//     mapContainer.innerHTML = "";
+//   }
 
-  // Center map at STL or average of all events
-  let center = [38.627, -90.1994];
-  if (store.events.length > 0) {
-    const avgLat = store.events.reduce((sum, e) => sum + e.latitude, 0) / store.events.length;
-    const avgLon = store.events.reduce((sum, e) => sum + e.longitude, 0) / store.events.length;
-    center = [avgLat, avgLon];
-  }
+//   // Center map at STL or average of all events
+//   let center = [38.627, -90.1994];
+//   if (store.events.length > 0) {
+//     const avgLat = store.events.reduce((sum, e) => sum + e.latitude, 0) / store.events.length;
+//     const avgLon = store.events.reduce((sum, e) => sum + e.longitude, 0) / store.events.length;
+//     center = [avgLat, avgLon];
+//   }
 
-  const map = L.map("interestMap").setView(center, 10);
+//   const map = L.map("interestMap").setView(center, 10);
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
+//   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+//     attribution: "&copy; OpenStreetMap contributors"
+//   }).addTo(map);
 
-  // Blue markers for all events
-  store.events.forEach(event => {
-    const icon = L.divIcon({
-      className: "custom-marker",
-      html: `<div style="background-color: blue; width: 12px; height: 12px; border-radius: 50%;"></div>`,
-      iconSize: [12, 12],
-      iconAnchor: [6, 6]
-    });
+//   // Blue markers for all events
+//   console.log("store event data", store.events)
+//   store.events.forEach(event => {
+//     const icon = L.divIcon({
+//       className: "custom-marker",
+//       html: `<div style="background-color: blue; width: 12px; height: 12px; border-radius: 50%;"></div>`,
+//       iconSize: [12, 12],
+//       iconAnchor: [6, 6]
+//     });
 
-    L.marker([event.latitude, event.longitude], { icon })
-      .bindPopup(`<strong>${event.eventName}</strong><br>${event.address}`)
-      .addTo(map);
-  });
-}
+//     L.marker([event.latitude, event.longitude], { icon })
+//       .bindPopup(`<strong>${event.eventName}</strong><br>${event.address}`)
+//       .addTo(map);
+//   });
+// }
