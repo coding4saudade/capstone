@@ -1,11 +1,12 @@
-import html from "html-literal";
-import headshot from "url:../assets/img/work.jpg";
 
-export default (state) => html`
+import html from "html-literal";
+import dogWithFlower from "url:../assets/img/dog-with-flower.jpg";
+
+export default () => html`
   <section id="bio">
     <div class="bio-container">
       <div class="bio-image">
-        <img src="${headshot}" alt="me" />
+        <img src="${dogWithFlower}" alt="me" />
       </div>
 
       <div class="bio-text">
