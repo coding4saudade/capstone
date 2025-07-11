@@ -340,7 +340,7 @@ router.hooks({
     if (view === "userHome") {
       axios.get("http://localhost:4000/events").then(res => {
         store.events = res.data;
-
+      console.log("store.events", store.events)
         axios
           .get(`https://api.openweathermap.org/data/2.5/weather?q=St. Louis&units=imperial&appid=542793ec2898e42e6e2901f0da39637b`)
           .then(res => {
