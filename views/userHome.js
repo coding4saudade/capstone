@@ -6,15 +6,21 @@ const allInterests = [
 ];
 
 export default state => {
+  console.log("Rendering userHome with state:", state);
   const matchedEvents = state.events?.filter(event =>
     event.interests?.some(interest => state.interests?.includes(interest))
   );
 
-  const hostedEvents = state.events?.filter(event =>
-    event.createdBy === (state.username || state.user?.username)
-  );
+const currentUsername = state.username || state.user?.username;
+
+const hostedEvents = state.events?.filter(event =>
+  event.createdBy?.username === currentUsername
+);
+
+console.log("🧪 Weather state at render time:", state.weather);
 
   return html`
+
     <h2>Welcome back, ${state.username || state.user?.username || "User"}!</h2>
 
     ${state.weather?.city ? `
@@ -24,20 +30,25 @@ export default state => {
       </h3>
     ` : "<h3>Loading weather data...</h3>"}
 
-    <h3>Events Based on Your Interests</h3>
-    <ul id="interestEvents">
-      ${matchedEvents?.length
-        ? matchedEvents.map(event => `
-            <li>
-              <strong>${event.eventName}</strong><br />
-              <em>Hosted by: ${event.createdBy}</em><br />
-              <span>${event.eventDate} @ ${event.startTime}–${event.endTime}</span><br />
-              <span>${event.address}</span>
-            </li>
-          `).join("")
-        : "<li>No matching events</li>"
-      }
-    </ul>
+<h3>Events Based on Your Interests</h3>
+
+<div id="interestsMap" style="height: 400px;"></div>
+
+
+<ul id="interestEvents">
+  ${matchedEvents?.length
+    ? matchedEvents.map(event => `
+        <li>
+          <strong>${event.eventName}</strong><br />
+          <em>Hosted by: ${event.createdBy?.username || "Unknown"}</em><br />
+          <span>${event.eventDate} @ ${event.startTime}–${event.endTime}</span><br />
+          <span>${event.address}</span>
+        </li>
+      `).join("")
+    : "<li>No matching events</li>"
+  }
+</ul>
+
 
     <h3>Your Hosted Events</h3>
     <ul id="hostedEvents">
@@ -55,7 +66,7 @@ export default state => {
 
     <div class="eventActions">
       <button class="createEventButton">Create Event</button>
-      <button class="editEventsButton">Edit or Delete Events</button>
+      <button class="editEventsButton" id="editEventsButton">Edit or Delete Events</button>
     </div>
 
     <h3>Your Interests</h3>
@@ -78,7 +89,9 @@ export default state => {
           </label><br />
         `).join("")}
       </fieldset>
-      <button type="submit">Update Interests</button>
+      <button id="updateInterestButton" type="submit">Update Interests</button>
     </form>
+
+    <button class="logoutButton" id="logoutButton">Logout</button>
   `;
 };

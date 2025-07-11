@@ -18,6 +18,10 @@ import {
 const router = new Navigo("/");
 export default router;
 
+
+
+
+
 router.hooks({
   before: (done, match) => {
     initializeSession();
@@ -26,7 +30,7 @@ router.hooks({
     switch (view) {
       case "userHome":
         const userId = match.data.id;
-        console.log("!!!!!!userID!!!", match.data);
+        console.log("!!!!!!userID!!!", match.data)
         Promise.all([
           axios.get(`http://localhost:4000/users/${userId}`),
           axios.get("http://localhost:4000/events")
@@ -45,17 +49,20 @@ router.hooks({
         break;
 
       case "editEvents":
-        isLoggedIn();
+        isLoggedIn()
+
 
         axios
           .get(`http://localhost:4000/events/user/${store.session.user._id}`)
           .then(response => {
+
             store.editEvents.events = response.data;
-            done();
+            done()
           })
           .catch(error => {
             console.error("Failed to load events for editEvents:", error);
             router.navigate("/view-not-found");
+
           });
 
         break;
@@ -94,11 +101,12 @@ router.hooks({
               view: "updateEvent"
             };
             //store.updateEvent.event = response.data;
-            done();
+            done()
           })
           .catch(error => {
             console.error("Error loading event for update:", error);
             router.navigate("/view-not-found");
+
           });
 
         break;
@@ -111,13 +119,14 @@ router.hooks({
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
     console.log("After hook running for view:", view);
 
-    // const barsIcon = document.querySelector(".fa-bars");
-    // if (barsIcon) {
-    //   barsIcon.addEventListener("click", () => {
-    //     const navUl = document.querySelector("nav > ul");
-    //     if (navUl) navUl.classList.toggle("hidden--mobile");
-    //   });
-    // }
+    const barsIcon = document.querySelector(".fa-bars");
+    if (barsIcon) {
+      barsIcon.addEventListener("click", () => {
+        const navUl = document.querySelector("nav > ul");
+        if (navUl) navUl.classList.toggle("hidden--mobile");
+      });
+    }
+
 
     if (view === "home") {
       // Login form logic
@@ -211,61 +220,24 @@ router.hooks({
       });
     }
 
+
+
+
     if (view === "createUser") {
       const registerForm = document.querySelector("#registerForm");
       if (registerForm) {
         registerForm.addEventListener("submit", event => {
           event.preventDefault();
-
           const formData = new FormData(registerForm);
-
-
-          const street = formData.get("street") || "";
-          const city = formData.get("city") || "";
-          const state = formData.get("state") || "";
-          const postalCode = formData.get("postalCode") || "";
-          const country = formData.get("country") || "";
-
-          const addressParts = [street, city, state, postalCode, country].filter(Boolean);
-          const addressQuery = addressParts.join(", ");
-
-          if (!addressQuery) {
-            alert("Please enter a valid address.");
-            return;
-          }
-
-
-          const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addressQuery)}&format=json`;
-
-          fetch(geocodeUrl, {
-            headers: {
-              "Accept-Language": "en",
-              "User-Agent": "Connextion/1.0 (info@email.com)" // Change this if needed
-            }
-          })
-            .then(res => res.json())
-            .then(data => {
-              if (!data || data.length === 0) {
-                alert("Could not find location. Please check the address.");
-                return;
-              }
-
-              const { lat, lon } = data[0];
-
-              const newUser = {
-                username: formData.get("username").toLowerCase(),
-                email: formData.get("email").toLowerCase(),
-                startingAddress: addressQuery,
-                latitude: parseFloat(lat),
-                longitude: parseFloat(lon),
-                interests: formData.getAll("interests")
-              };
-
-              return axios.post("http://localhost:4000/users", newUser);
-            })
+          const newUser = {
+            username: formData.get("username").toLowerCase(),
+            email: formData.get("email").toLowerCase(),
+            startingAddress: formData.get("startingAddress"),
+            interests: formData.getAll("interests")
+          };
+          axios
+            .post("http://localhost:4000/users", newUser)
             .then(res => {
-              if (!res) return; //
-
               store.session.user = res.data;
               store.session.isLoggedIn = true;
               localStorage.setItem("sessionUser", JSON.stringify(res.data));
@@ -273,13 +245,12 @@ router.hooks({
               router.navigate(`/userHome/${res.data._id}`);
             })
             .catch(err => {
-              console.error("Failed to create user or geocode address:", err);
-              alert("Could not create user. Please check your input and try again.");
+              console.error("Failed to create user:", err);
+              alert("Could not create user. Try a different username or check your input.");
             });
         });
       }
     }
-
 
     if (view === "updateEvent") {
       const updateForm = document.querySelector("#updateEventForm");
@@ -338,7 +309,8 @@ router.hooks({
     }
 
     if (view === "userHome") {
-      axios.get("http://localhost:4000/events").then(res => {
+
+      axios.get("/api/events").then(res => {
         store.events = res.data;
 
         axios
@@ -355,44 +327,7 @@ router.hooks({
             attachUserHomeListeners();
 
             loadLeaflet().then(() => {
-              const userLat = store.session.user?.latitude || 38.627;
-              const userLon = store.session.user?.longitude || -90.1994;
-
-              const map = L.map("interestsMap").setView([userLat, userLon], 12);
-              console.log("Map centered on:", userLat, userLon);
-
-              L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "&copy; OpenStreetMap contributors"
-              }).addTo(map);
-
-              // Google style User location blue dot
-              const userIcon = L.icon({
-                iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png", // replace this with your choice
-                iconSize: [32, 32],   // size of the icon
-                iconAnchor: [16, 32], // point of the icon which corresponds to marker's location
-                popupAnchor: [0, -32] // point from which the popup should open relative to the iconAnchor
-              });
-
-              L.marker([userLat, userLon], { icon: userIcon })
-                .addTo(map)
-                .bindPopup("📍 You Are Here");
-
-
-              // Only event markers where interests match user interests (green)
-              store.events
-                .filter(e => e.latitude && e.longitude && e.interests.some(interest => store.session.user.interests.includes(interest)))
-                .forEach(e => {
-                  const eventIcon = L.divIcon({
-                    className: "event-marker",
-                    html: `<div style="background-color:green;width:12px;height:12px;border-radius:50%;"></div>`,
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6]
-                  });
-
-                  L.marker([e.latitude, e.longitude], { icon: eventIcon })
-                    .bindPopup(`<strong>${e.eventName}</strong><br>${e.address}`)
-                    .addTo(map);
-                });
+              renderEventMap(store.events, store.session.user.interests);
             });
           })
           .catch(err => {
@@ -401,138 +336,94 @@ router.hooks({
 
             render(store.userHome);
             attachUserHomeListeners();
-            //repeating map code if weather API fails, so the page still loads.  I need to reform this into a function later
+
             loadLeaflet().then(() => {
-              const userLat = store.session.user?.latitude || 38.627;
-              const userLon = store.session.user?.longitude || -90.1994;
-
-              const map = L.map("interestsMap").setView([userLat, userLon], 12);
-              console.log("Map centered on:", userLat, userLon);
-
-              L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "&copy; OpenStreetMap contributors"
-              }).addTo(map);
-
-
-              // Google style User location blue dot
-              const userIcon = L.icon({
-                iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -32]
-              });
-
-              L.marker([userLat, userLon], { icon: userIcon })
-                .addTo(map)
-                .bindPopup("📍 You Are Here");
-
-
-              // Only event markers where interests match user interests (green)
-              store.events
-                .filter(e => e.latitude && e.longitude && e.interests.some(interest => store.session.user.interests.includes(interest)))
-                .forEach(e => {
-                  const eventIcon = L.divIcon({
-                    className: "event-marker",
-                    html: `<div style="background-color:green;width:12px;height:12px;border-radius:50%;"></div>`,
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6]
-                  });
-
-                  L.marker([e.latitude, e.longitude], { icon: eventIcon })
-                    .bindPopup(`<strong>${e.eventName}</strong><br>${e.address}`)
-                    .addTo(map);
-                });
+              renderEventMap(store.events, store.session.user.interests);
             });
           });
-      });
-    }
+      }
 
 
     if (view === "createEvent" && store.session.user) {
-      const form = document.querySelector("#eventForm");
-      console.log("⭐eventForm found in DOM!");
+        const form = document.querySelector("#eventForm");
+        console.log("⭐eventForm found in DOM!");
 
-      const userNameInput = document.querySelector("#userName");
-      if (userNameInput) {
-        userNameInput.value = store.session.user.username;
-      }
-
-      form.addEventListener("submit", event => {
-        event.preventDefault();
-
-        const formData = new FormData(form);
-
-        const street = formData.get("street") || "";
-        const city = formData.get("city") || "";
-        const state = formData.get("state") || "";
-        const postalCode = formData.get("postalCode") || "";
-        const country = formData.get("country") || "";
-
-        const addressParts = [street, city, state, postalCode, country].filter(Boolean);
-        const addressQuery = addressParts.join(", ");
-
-        if (!addressQuery) {
-          alert("Please enter a valid address.");
-          return;
+        const userNameInput = document.querySelector("#userName");
+        if (userNameInput) {
+          userNameInput.value = store.session.user.username;
         }
 
-        const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-          addressQuery
-        )}&format=json`;
+        form.addEventListener("submit", event => {
+          event.preventDefault();
 
-        fetch(geocodeUrl, {
-          headers: {
-            "Accept-Language": "en", // helps with consistent results per documentation
-            "User-Agent": "Connextion/1.0 (info@email.com)" // Required if on server or backend per documentation
+          const formData = new FormData(form);
+
+          const street = formData.get("street") || "";
+          const city = formData.get("city") || "";
+          const state = formData.get("state") || "";
+          const postalCode = formData.get("postalCode") || "";
+          const country = formData.get("country") || "";
+
+          const addressParts = [street, city, state, postalCode, country].filter(Boolean);
+          const addressQuery = addressParts.join(", ");
+
+          if (!addressQuery) {
+            alert("Please enter a valid address.");
+            return;
           }
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data || data.length === 0) {
-              alert("Could not find location. Please check the address.");
-              return;
+
+
+          const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            addressQuery
+          )}&format=json`;
+
+          fetch(geocodeUrl, {
+            headers: {
+              "Accept-Language": "en", // helps with consistent results per documentation
+              "User-Agent": "Connextion/1.0 (info@email.com)" // Required if on server or backend
             }
-
-            const { lat, lon } = data[0];
-
-            const newEvent = {
-              eventName: formData.get("eventName"),
-              address: addressQuery,
-              eventDate: formData.get("eventDate"),
-              startTime: formData.get("startTime"),
-              endTime: formData.get("endTime"),
-              visible: formData.get("visible"),
-              interests: formData.getAll("interests"),
-              createdBy: store.session.user._id,
-              latitude: parseFloat(lat), //parseFloat takes the string response and converts it to an actual number
-              longitude: parseFloat(lon) // lat and lon are returned from API as a string
-            };
-
-            return axios.post("http://localhost:4000/events", newEvent);
           })
-          .then(() => {
-            alert("Event created!");
-            router.navigate(`/userHome/${store.session.user._id}`);
-          })
-          .catch(error => {
-            console.error("Error during geocoding or event creation:", error);
-            alert("Could not get location or create event. Please check your input.");
-          });
-      });
+            .then(res => res.json())
+            .then(data => {
+              if (!data || data.length === 0) {
+                alert("Could not find location. Please check the address.");
+                return;
+              }
+
+              const { lat, lon } = data[0];
+
+              const newEvent = {
+                eventName: formData.get("eventName"),
+                address: addressQuery,
+                eventDate: formData.get("eventDate"),
+                startTime: formData.get("startTime"),
+                endTime: formData.get("endTime"),
+                visible: formData.get("visible"),
+                interests: formData.getAll("interests"),
+                createdBy: store.session.user._id,
+                latitude: parseFloat(lat), //parseFloat takes the string response and converts it to an actual number
+                longitude: parseFloat(lon)
+              };
+
+              return axios.post("http://localhost:4000/events", newEvent);
+            })
+            .then(() => {
+              alert("Event created!");
+              router.navigate(`/userHome/${store.session.user._id}`);
+            })
+            .catch(error => {
+              console.error("Error during geocoding or event creation:", error);
+              alert("Could not get location or create event. Please check your input.");
+            });
+        });
+      }
+
+
+
+
 
     }
-    // add menu toggle to bars icon in nav bar
-
-
-
-    document.querySelector(".fa-bars").addEventListener("click", () => {
-       console.log("Fa-bars clicked" )
-
-      document.querySelector("nav > ul").classList.toggle("hidden--mobile");
-
-    });
-  }
-});
+  });
 
 router.on({
   "/": () => render(),
@@ -553,5 +444,6 @@ router.on({
     }
   }
 });
+
 
 router.resolve();

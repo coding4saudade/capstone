@@ -1,108 +1,264 @@
+/*  BASE STYLES  */
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-/* Header styles */
-header {
-  background: linear-gradient(to right, #007BFF, #8E2DE2); /* Blue to Purple */
-  padding: 20px;             /* Space inside the header */
-  text-align: center;        /* Center text inside header */
-  font-size: 24px;           /* Larger font size */
-  width: 100%;               /* Make header span full width of its container */
-  box-sizing: border-box;    /* Include padding in the width calculation */
-  color: white;              /* Make header text white for contrast */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
 }
 
-/* Navigation bar styles */
+.hidden {
+  display: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+/*  LAYOUT: HEADER, NAV, FOOTER */
+
+header {
+  background: linear-gradient(to right, #007BFF, #8E2DE2);
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
+  width: 100%;
+  color: white;
+}
+
 nav {
-  background: #333;          /* Dark background for the nav bar */
-  padding: 10px;             /* Space inside nav */
-  display: flex;             /* Use flexbox for horizontal layout */
-  align-items: center;       /* Vertically center nav items */
-  gap: 20px;                 /* Space between nav items */
+  background-color: #333;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
   margin: 0 auto;
   max-width: none;
-  justify-content: center;
-  /* No display: none; here – we want nav visible at all times */
 }
 
-/* Menu icon styles inside nav (hamburger icon) */
 nav i {
-  color: white;              /* White icon color */
-  cursor: pointer;           /* Pointer cursor on hover */
-  }
+  color: white;
+  cursor: pointer;
+}
 
-/* Navigation list styles */
 nav ul {
-  display: flex;             /* Horizontal list layout */
-  list-style: none;          /* Remove default bullets */
-  margin: 0;                 /* Remove default margin */
-  padding: 0;                /* Remove default padding */
-  gap: 15px;                 /* Space between list items */
-}
-
-/* Navigation list item text color */
-nav ul li {
-  color: white;              /* White text */
-}
-
-/* Navigation links styles */
-nav ul li a {
-  color: white;              /* White text */
-  text-decoration: none;     /* Remove underline */
-}
-
-/* Navigation links hover effect */
-nav ul li a:hover {
-  text-decoration: underline; /* Underline on hover */
-}
-/* Form container styles */
-form {
-  max-width: 300px;          /* Limit form width for readability */
-  margin: 20px auto;         /* Center form horizontally with vertical margin */
-  padding: 15px;             /* Space inside the form */
-  border: 1px solid #ccc;    /* Light gray border */
-  border-radius: 8px;        /* Rounded corners */
-  background: #f9f9f9;       /* Slightly off-white background */
-}
-
-/* form {
-  border: solid 1px black;
   display: flex;
-  flex-direction: column;
-  margin: 1rem 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 15px;
+}
+
+nav ul li {
+  color: white;
+  position: relative;
+  padding: 0 10px;
+}
+
+nav ul li::after {
+  content: "•";
+  position: absolute;
+  right: 0;
+  transform: translateX(100%);
+  color: white;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+nav ul li:last-child::after {
+  content: "";
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* #unique {
+  background: url(https://www.svgrepo.com/show/530200/whale.svg);
+  height: 50px;
+  width: 50px;
+  z-index: 9999;
 } */
 
-/* form > * {
-  margin: 0.5rem;
-} */
 
 
-/* Input fields styling */
+footer {
+  width: 100%;
+  background: linear-gradient(to right, #007BFF, #8E2DE2);
+  color: white;
+  padding: 2rem 0;
+  box-sizing: border-box;
+  border-top: solid 1px black;
+  margin: 1rem 0;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+.footer-nav a {
+  color: white;
+  margin: 0 0.5rem;
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  text-decoration: underline;
+}
+
+.social-links {
+  margin-top: 1rem;
+}
+
+.social-links a {
+  color: white;
+  margin: 0 0.5rem;
+}
+
+.social-links a:hover {
+  color: #ddd;
+}
+
+/*  FORM styling */
+
+form {
+  max-width: 300px;
+  margin: 20px auto;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-  width: 100%;               /* Inputs fill full width of form */
-  padding: 8px;              /* Inner spacing */
-  margin-top: 5px;           /* Space above input */
-  margin-bottom: 15px;       /* Space below input */
-  border: 1px solid #ccc;    /* Light gray border */
-  border-radius: 4px;        /* Slightly rounded corners */
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-/* Button on forms styling */
+form > input[type="submit"] {
+  width: 40%;
+  margin: 0.5rem;
+  margin-right: auto;
+}
+
 button {
-  width: 100%;               /* Button fills full width */
-  padding: 10px;             /* Inner spacing */
+  width: 100%;
+  padding: 10px;
   background-color: #007BFF;
-  color: #fff;               /* White text */
-  border: none;              /* Remove default border */
-  border-radius: 4px;        /* Rounded corners */
-  cursor: pointer;           /* Pointer cursor on hover */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-/* buttons on page styling*/
+button:hover,
+.createEventButton:hover,
+.logoutButton:hover,
+.eventActions button:hover {
+  background-color: #0056b3;
+}
 
+
+.hero-content {
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+
+
+/*  COMPONENT STYLES  */
+
+#map,
+#interestsMap {
+  height: 550px;
+  width: 100%;
+  max-width: 900px;
+  margin: 3rem auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 9px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+#bio {
+  margin-bottom: 2rem;
+}
+
+#currentInterests {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+#oops404 img {
+  max-width: 40%;
+  margin-left: 30%;
+}
+
+#oops404 .attribution {
+  font-size: 0.7em;
+  text-align: center;
+}
+
+.centered-content {
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.signup-link a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
 
 .toggleAllEvents {
   width: auto;
@@ -126,121 +282,84 @@ button {
   margin: 1rem auto;
 }
 
-.eventActions button {
+.eventActions button,
+.logoutButton {
   flex: 1;
   padding: 10px;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 1rem;
+  cursor: pointer;
   border: none;
   color: white;
   background-color: #007BFF;
   transition: background-color 0.3s ease;
+  width: auto;
 }
 
-.eventActions button:hover {
-  background-color: #0056b3;
+.popup {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #28a745;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease;
 }
 
-
-
-.createEventButton:hover {
-  background-color: #0056b3;
-}
-/* Button hover effect */
-button:hover {
-  background: #555;          /* Lighter dark background on hover */
-}
-
-.hidden {
-  display: none;
-}
-
-
-/* Image placeholder styling */
-.image-placeholder {
-  width: 300px;              /* Fixed width */
-  height: 200px;             /* Fixed height */
-  background-color: #e0e0e0; /* Light gray background */
-  border: 2px dashed #ccc;   /* Dashed border for placeholder look */
-  border-radius: 8px;        /* Rounded corners */
-  display: flex;             /* Flex for centering content */
-  align-items: center;       /* Vertical centering */
-  justify-content: center;   /* Horizontal centering */
-  color: #888;               /* Gray text color */
-  font-family: sans-serif;   /* Clean font */
-  font-size: 16px;           /* Text size */
-  margin: 20px auto;         /* Center placeholder with vertical margin */
-}
-
-
-/* Main heading centering */
-h1 {
-  text-align: center;        /* Center heading text */
-}
-
-/* Container that centers content and stacks vertically */
-.centered-content {
-  text-align: center;        /* Center inline content like text */
-  width: 100%;               /* Full container width */
-  display: flex;             /* Use flexbox layout */
-  flex-direction: column;    /* Stack children vertically */
-  align-items: center;       /* Center children horizontally */
-  gap: 1rem;                 /* Space between children */
-}
-
-/* Sign up link */
-.signup-link {
-  text-align: center;        /* Centers the text under the form */
-  margin-top: 10px;          /* Space above the link */
-  font-size: 1rem;           /* Adjust as needed */
-}
-
-.signup-link a {
-  color: #007BFF;            /* Nice blue link */
-  text-decoration: none;     /* No underline by default */
-}
-
-.signup-link a:hover {
-  text-decoration: underline;  /* Underline on hover */
-}
-
-form > input[type="submit"] {
-  width: 40%;
-  margin: 0.5rem;
-  margin-right: auto;
-}
-
-footer {
-  border-top: solid 1px black;
-  padding: 2rem 2rem 4rem;
-  margin: 1rem 1rem;
-}
-
-#bio {
-  margin: 1rem;
-}
-
-
-
-#oops404 img {
-  max-width: 40%;
-  margin-left: 30%;
-}
-
-#oops404 .attribution {
-  font-size: 0.7em;
+#delete-popup {
+  top: 30%;
+  background-color: white;
+  color: #333;
+  padding: 1.5rem 2rem;
+  width: 300px;
+  max-width: 90%;
   text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 549px){
+#delete-popup .popup-content h3 {
+  margin-top: 0;
+}
+
+#delete-popup .popup-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+#delete-popup .popup-actions button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#delete-popup .popup-actions .danger {
+  background-color: #cc0000;
+  color: white;
+}
+
+#delete-popup .popup-actions #cancel-delete {
+  background-color: #ccc;
+  color: #333;
+}
+
+/*  MEDIA QUERIES  */
+
+@media (max-width: 549px) {
   .hidden--mobile {
     display: none !important;
   }
 
   nav {
-    display: flex;
-    align-items: center;
     flex-direction: column;
   }
 
@@ -250,15 +369,12 @@ footer {
   }
 
   nav > ul {
-    display: flex;
-    align-items: center;
     flex-direction: column;
-    padding: 0 0;
+    align-items: center;
   }
 
   nav > ul > li {
     padding: 0.5rem;
-    list-style-type: none;
   }
 
   #bio img {
@@ -269,35 +385,10 @@ footer {
   }
 }
 
-
-
-
 @media (min-width: 550px) {
   nav > ul {
-    display: flex;
     justify-content: space-evenly;
     padding: 0;
-  }
-
-  /* Add this block to style each nav item and insert the dots */
-  nav > ul > li {
-    position: relative;
-    padding: 0 10px;
-    color: white;
-  }
-
-  nav > ul > li::after {
-    content: "•";
-    position: absolute;
-    right: 0;
-    transform: translateX(100%);
-    color: white;
-    font-size: 1.2em;
-    line-height: 1;
-  }
-
-  nav > ul > li:last-child::after {
-    content: "";
   }
 
   nav > .fa-bars {
@@ -317,26 +408,55 @@ footer {
 }
 
 
-.popup {
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #28a745;
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #333;
+  padding: 10px 20px;
   color: white;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  z-index: 1000;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  transition: opacity 0.3s ease;
 }
 
-.hidden {
-  display: none;
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
-#currentInterests {
-  list-style-type: none;  /* Removes bullets */
-  padding-left: 0;        /* Removes default left padding */
-  margin-left: 0;         /* Optional: remove margin too */
+
+.nav-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
+
+.nav-title h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.nav-title .tagline {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #bbb;
+}
+
+/* keep your existing nav-links styles for the <ul> */
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links li a:hover {
+  text-decoration: underline;
+}
+

@@ -1,4 +1,13 @@
 export default {
-  header: "Create an Event", // The text that shows on the view
-  view: "createEvent" // This should match the view file name
+  eventName: "",
+  address: "",
+  eventDate: "",
+  startTime: "",
+  endTime: "",
+  interests: [],
+  visable: "public",
+  createdBy: "",
+  view: "createEvent",
+  userId: "",
+  username: ""
 };

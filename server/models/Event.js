@@ -23,7 +23,8 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  visable: {
+
+  visible: {
     type: String,
     enum: ["public", "private"],
     default: "public"
@@ -36,7 +37,12 @@ const eventSchema = new mongoose.Schema({
     type: String,
 
   },
-  interests: [String]
+  interests: [String],
+
+  latitude: Number,
+
+  longitude: Number,
+
 
 });
 
