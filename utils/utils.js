@@ -62,7 +62,7 @@ export function attachUserHomeListeners() {
       const userId = store.session.user._id;
 
       axios
-        .put(`http://localhost:4000/users/${userId}`, { interests: selected })
+        .put(`${process.env.CONNECTION_API_URL}/${userId}`, { interests: selected })
         .then(response => {
           store.userHome.interests = response.data.interests;
           render(store.userHome);
@@ -126,7 +126,7 @@ export function showDeleteConfirmation({ eventId, eventName, eventDate }) {
 
   document.getElementById("confirm-delete").addEventListener("click", () => {
     axios
-      .delete(`http://localhost:4000/events/${eventId}`)
+      .delete(`${process.env.CONNECTION_API_URL}/${eventId}`)
       .then(() => {
         popup.classList.add("hidden");
         showPopup("Event deleted", "#cc0000");
