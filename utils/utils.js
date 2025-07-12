@@ -62,7 +62,7 @@ export function attachUserHomeListeners() {
       const userId = store.session.user._id;
 
       axios
-        .put(`${process.env.CONNECTION_API_URL}/${userId}`, { interests: selected })
+        .put(`${process.env.CONNECTION_API_URL}/users/${userId}`, { interests: selected })
         .then(response => {
           store.userHome.interests = response.data.interests;
           render(store.userHome);
