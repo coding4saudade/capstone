@@ -1,12 +1,12 @@
 
 import html from "html-literal";
-import baby from "url:../assets/img/baby.jpg";
+import dogWithFlower from "url:../assets/img/dog-with-flower.jpg";
 
 export default () => html`
   <section id="bio">
     <div class="bio-container">
       <div class="bio-image">
-        <img src="${baby}" alt="me" />
+        <img src="${dogWithFlower}" alt="me" />
       </div>
 
       <div class="bio-text">
