@@ -74,7 +74,34 @@ export function attachUserHomeListeners() {
         });
     });
   }
+  const directionButtons = document.querySelectorAll(".getDirectionsButton");
+
+  directionButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const destination = button.dataset.address;
+
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lon}&destination=${destination}`;
+          window.open(mapsUrl, "_blank");
+        },
+        error => {
+          alert("Could not get your location. Please check your settings.");
+          console.error("Geolocation error:", error);
+        }
+      );
+    });
+  });
 }
+
 
 
 
@@ -126,7 +153,7 @@ export function showDeleteConfirmation({ eventId, eventName, eventDate }) {
 
   document.getElementById("confirm-delete").addEventListener("click", () => {
     axios
-      .delete(`${process.env.CONNECTION_API_URL}/${eventId}`)
+      .delete(`${process.env.CONNECTION_API_URL}/events/${eventId}`)
       .then(() => {
         popup.classList.add("hidden");
         showPopup("Event deleted", "#cc0000");
