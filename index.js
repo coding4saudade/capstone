@@ -60,20 +60,7 @@ router.hooks({
 
         break;
 
-      // case "map":
-      // axios
-      //         .get(
-      //   "http://api.openweathermap.org/geo/1.0/direct?q=Saint Louis, MO, US&limit=1&appid=542793ec2898e42e6e2901f0da39637b"
-      // )
-      //   .then((response) => {
-      //     store.map.maps = response.data;
-      //     done();
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error loading map:", error);
-      //     done();
-      //   });
-      // break;
+
       case "createEvent":
         isLoggedIn(); // check user is logged in
 
@@ -355,6 +342,7 @@ router.hooks({
             attachUserHomeListeners();
 
             loadLeaflet().then(() => {
+              console.log("loadlet loading!!!!!!!!!!!!!!!!!!!!!!!")
               const userLat = store.session.user?.latitude || 38.627;
               const userLon = store.session.user?.longitude || -90.1994;
 

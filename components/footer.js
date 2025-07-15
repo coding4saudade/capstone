@@ -6,16 +6,16 @@ export default () => html` <footer>
     <p>Made with 💙 for people, animals, and the planet.</p>
 </div>
     <nav class="nav-footer">
-      <a href="#about">About</a> |
-      <a href="#contact">Contact</a> |
+      <a href="/aboutMe">About</a> |
+      <a href="/contactMe">Contact</a> |
       <a href="#privacy">Privacy Policy</a>
     </nav>
 
     <div class="social-links">
-      <a href="https://www.linkedin.com/in/your-linkedin-handle" target="_blank" aria-label="LinkedIn">
+      <a href="https://www.linkedin.com/in/amanzi-umoya/" target="_blank" aria-label="LinkedIn">
         <i class=""></i>
       </a>
-      <a href="https://github.com/your-github-username" target="_blank" aria-label="GitHub">
+      <a href="https://github.com/coding4saudade" target="_blank" aria-label="GitHub">
         <i class=""></i>
       </a>
     </div>
