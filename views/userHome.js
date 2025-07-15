@@ -11,13 +11,13 @@ export default state => {
     event.interests?.some(interest => state.interests?.includes(interest))
   );
 
-const currentUsername = state.username || state.user?.username;
+  const currentUsername = state.username || state.user?.username;
 
-const hostedEvents = state.events?.filter(event =>
-  event.createdBy?.username === currentUsername
-);
+  const hostedEvents = state.events?.filter(event =>
+    event.createdBy?.username === currentUsername
+  );
 
-console.log("🧪 Weather state at render time:", state.weather);
+  console.log("🧪 Weather state at render time:", state.weather);
 
   return html`
 
@@ -35,9 +35,9 @@ console.log("🧪 Weather state at render time:", state.weather);
 <div id="interestsMap" style="height: 400px;"></div>
 
 
-<ul id="interestEvents">
+<!-- <ul id="interestEvents">
   ${matchedEvents?.length
-    ? matchedEvents.map(event => `
+      ? matchedEvents.map(event => `
         <li>
           <strong>${event.eventName}</strong><br />
           <em>Hosted by: ${event.createdBy?.username || "Unknown"}</em><br />
@@ -45,23 +45,46 @@ console.log("🧪 Weather state at render time:", state.weather);
           <span>${event.address}</span>
         </li>
       `).join("")
-    : "<li>No matching events</li>"
-  }
+      : "<li>No matching events</li>"
+    }
+</ul> -->
+<ul id="interestEvents">
+  ${matchedEvents?.length
+      ? matchedEvents.map(event => `
+        <li class="eventItem">
+          <div class="eventInfo">
+          <strong>${event.eventName}</strong><br />
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(event.address)}"
+             target="_blank" rel="noopener noreferrer"> Get Directions </a><br />
+          <em>Hosted by: ${event.createdBy?.username || "Unknown"}</em><br />
+          <span>${event.eventDate} @ ${event.startTime}–${event.endTime}</span><br />
+          <span>${event.address}</span><br />
+          </div>
+
+          </li>
+      `).join("")
+      : "<li>No matching events</li>"
+    }
 </ul>
 
 
     <h3>Your Hosted Events</h3>
     <ul id="hostedEvents">
       ${hostedEvents?.length
-        ? hostedEvents.map(event => `
-            <li>
+      ? hostedEvents.map(event => `
+          <li class="eventItem">
+            <div class="eventInfo">
               <strong>${event.eventName}</strong><br />
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(event.address)}"
+              target="_blank" rel="noopener noreferrer"> Get Directions </a><br />
+
               <span>${event.eventDate} @ ${event.startTime}–${event.endTime}</span><br />
               <span>${event.address}</span>
+            </div>
             </li>
           `).join("")
-        : "<li>You have not hosted any events yet</li>"
-      }
+      : "<li>You have not hosted any events yet</li>"
+    }
     </ul>
 
     <div class="eventActions">
@@ -72,9 +95,9 @@ console.log("🧪 Weather state at render time:", state.weather);
     <h3>Your Interests</h3>
     <ul id="currentInterests">
       ${state.interests?.length
-        ? state.interests.map(interest => `<li>${interest}</li>`).join("")
-        : "<li>No interests yet</li>"
-      }
+      ? state.interests.map(interest => `<li>${interest}</li>`).join("")
+      : "<li>No interests yet</li>"
+    }
     </ul>
 
     <h3>Update Your Interests</h3>
