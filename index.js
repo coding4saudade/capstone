@@ -342,7 +342,7 @@ router.hooks({
             attachUserHomeListeners();
 
             loadLeaflet().then(() => {
-              console.log("loadlet loading!!!!!!!!!!!!!!!!!!!!!!!")
+              console.log("loadlet loading")
               const userLat = store.session.user?.latitude || 38.627;
               const userLon = store.session.user?.longitude || -90.1994;
 
